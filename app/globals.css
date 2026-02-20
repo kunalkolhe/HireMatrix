@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ========== PROFESSIONAL SAAS PALETTE (LinkedIn/Unstop inspired) ========== */
+
+    /* Neutral Grays */
+    --background: 210 20% 98%;
+    /* #f8f9fa - Very light gray/blue tint for app bg */
+    --foreground: 222.2 47.4% 11.2%;
+    /* #0f172a - Dark slate for text */
+
+    /* Cards/Surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    /* Primary Brand Color: Professional Trusted Blue */
+    --primary: 221.2 83.2% 53.3%;
+    /* #2563eb - Blue 600 */
+    --primary-foreground: 210 40% 98%;
+
+    /* Secondary: Subtle Slate */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Muted Text */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Accents (Success, Warning, etc.) */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders & Inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
+    /* 8px - Standard modern soft roundness */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* ========== PROFESSIONAL UTILITIES ========== */
+
+  /* Standard Professional Card */
+  .card-professional {
+    @apply bg-white border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  /* Professional Button Overrides */
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-blue-700 shadow-sm font-semibold rounded-md transition-colors;
+  }
+
+  /* Clean Inputs */
+  .input-clean {
+    @apply border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary rounded-md bg-white;
+  }
+
+  /* Subtle Badges */
+  .badge-subtle {
+    @apply bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full text-xs font-medium border border-transparent;
+  }
+}

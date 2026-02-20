@@ -1,0 +1,5 @@
+# Vercel ignore file
+# This file tells Vercel what to ignore during deployment
+
+# Lock files (keep only one)
+pnpm-lock.yaml
