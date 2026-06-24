@@ -39,10 +39,19 @@ export default function Dashboard() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Redirect to login if not authenticated
+  // Redirect based on role or to login if not authenticated
   useEffect(() => {
-    if (!loading && !authUser) {
-      router.push("/login")
+    if (!loading) {
+      if (!authUser) {
+        router.push("/login")
+      } else {
+        const role = authUser.user_metadata?.role || authUser.user_metadata?.account_type
+        if (role === 'recruiter') {
+          router.push('/recruiter/dashboard')
+        } else {
+          router.push('/candidate/dashboard')
+        }
+      }
     }
   }, [authUser, loading, router])
 

@@ -42,8 +42,13 @@ export default function RecruiterLayout({
     const { user, signOut, loading } = useAuth()
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push("/login")
+        if (!loading) {
+            if (!user) {
+                router.push("/login")
+            } else if (user.user_metadata?.role === 'candidate' || user.user_metadata?.account_type === 'candidate') {
+                // Route protection: If user is candidate, redirect to candidate dashboard
+                window.location.href = '/candidate/dashboard'
+            }
         }
     }, [user, loading, router])
 

@@ -94,14 +94,14 @@ export default function LeaderboardPage() {
                 // Convert to candidate format
                 let realCandidates: Candidate[] = supabaseCandidates.map((s: any) => ({
                     id: s.id,
-                    name: s.candidateInfo.name,
-                    email: s.candidateInfo.email,
+                    name: s.candidateInfo?.name || 'Unknown',
+                    email: s.candidateInfo?.email || 'N/A',
                     score: s.scores?.totalScore || 0,
                     totalPossible: s.scores?.totalPossible || 100,
                     percentage: s.scores?.percentage !== undefined ? s.scores.percentage : null,
                     submittedAt: s.submittedAt,
-                    timeSpent: s.timeSpent || 0,
-                    status: s.status === 'shortlisted' ? 'shortlisted' : s.status === 'rejected' ? 'rejected' : 'pending',
+                    timeSpent: s.answers ? Math.round(Object.values(s.answers).reduce((acc: number, a: any) => acc + (a.time_spent_seconds || 0), 0) / 60) : 0,
+                    status: (s.status === 'shortlisted' || s.status === 'rejected' || s.status === 'evaluated') ? s.status : 'pending',
                     tabSwitches: s.antiCheatData?.tab_switches || 0,
                     pasteCount: s.antiCheatData?.copy_paste_detected ? 1 : 0,
                     userId: s.candidate_id || s.candidateInfo?.userId || null
@@ -128,7 +128,12 @@ export default function LeaderboardPage() {
                     throw new Error('No candidates found in Supabase, trying fallback')
                 }
 
-                setCandidates(realCandidates.sort((a, b) => (b.percentage || 0) - (a.percentage || 0)))
+                setCandidates(realCandidates.sort((a, b) => {
+                    if ((b.percentage || 0) !== (a.percentage || 0)) {
+                        return (b.percentage || 0) - (a.percentage || 0)
+                    }
+                    return a.timeSpent - b.timeSpent
+                }))
             } catch (error) {
                 console.error('Error loading data:', error)
                 // Fallback to localStorage
@@ -143,19 +148,24 @@ export default function LeaderboardPage() {
                 const jobSubmissions = allSubmissions.filter((s: any) => s.assessmentId === jobId)
                 const realCandidates: Candidate[] = jobSubmissions.map((s: any) => ({
                     id: s.id,
-                    name: s.candidateInfo.name,
-                    email: s.candidateInfo.email,
+                    name: s.candidateInfo?.name || 'Unknown',
+                    email: s.candidateInfo?.email || 'N/A',
                     score: s.scores?.totalScore || 0,
                     totalPossible: s.scores?.totalPossible || 100,
                     percentage: s.scores?.percentage !== undefined ? s.scores.percentage : null,
                     submittedAt: s.submittedAt,
-                    timeSpent: s.timeSpent || 0,
-                    status: s.status === 'shortlisted' ? 'shortlisted' : s.status === 'rejected' ? 'rejected' : 'pending',
+                    timeSpent: s.answers ? Math.round(Object.values(s.answers).reduce((acc: number, a: any) => acc + (a.time_spent_seconds || 0), 0) / 60) : 0,
+                    status: (s.status === 'shortlisted' || s.status === 'rejected' || s.status === 'evaluated') ? s.status : 'pending',
                     tabSwitches: s.antiCheatData?.tab_switches || 0,
                     pasteCount: s.antiCheatData?.copy_paste_detected ? 1 : 0,
                     userId: s.candidate_id || s.candidateInfo?.userId || null
                 }))
-                setCandidates(realCandidates.sort((a, b) => (b.percentage || 0) - (a.percentage || 0)))
+                setCandidates(realCandidates.sort((a, b) => {
+                    if ((b.percentage || 0) !== (a.percentage || 0)) {
+                        return (b.percentage || 0) - (a.percentage || 0)
+                    }
+                    return a.timeSpent - b.timeSpent
+                }))
             } finally {
                 setLoading(false)
             }

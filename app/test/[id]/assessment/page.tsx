@@ -135,7 +135,7 @@ export default function SequentialAssessmentPage() {
                     setTimeRemaining((formattedJob.config?.duration_minutes || 60) * 60)
                 } else {
                     // Fallback to localStorage
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const foundJob = savedJobs.find((j: Job) => j.id === assessmentId)
 
                     if (foundJob) {
@@ -146,7 +146,7 @@ export default function SequentialAssessmentPage() {
             } catch (error) {
                 console.error('Error loading job:', error)
                 // Fallback to localStorage
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const foundJob = savedJobs.find((j: Job) => j.id === assessmentId)
 
                 if (foundJob) {
@@ -773,7 +773,7 @@ export default function SequentialAssessmentPage() {
                         </p>
                         <Button
                             onClick={() => setShowTabSwitchWarning(false)}
-                            className="w-full bg-white text-black hover:bg-white/90"
+                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                         >
                             I Understand
                         </Button>
@@ -810,7 +810,7 @@ export default function SequentialAssessmentPage() {
                                     (element as any).msRequestFullscreen()
                                 }
                             }}
-                            className="w-full bg-white text-black hover:bg-white/90"
+                            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                         >
                             I Understand - Return to Fullscreen
                         </Button>
@@ -999,7 +999,7 @@ export default function SequentialAssessmentPage() {
                                 {canSubmit() ? (
                                     <Button
                                         onClick={handleSubmit}
-                                        className="bg-white text-black hover:bg-white/90"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                                     >
                                         <Send className="w-4 h-4 mr-2" />
                                         Submit Assessment
@@ -1007,7 +1007,7 @@ export default function SequentialAssessmentPage() {
                                 ) : (
                                     <Button
                                         onClick={handleNext}
-                                        className="bg-white text-black hover:bg-white/90"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                                     >
                                         Next
                                         <ArrowRight className="w-4 h-4 ml-2" />

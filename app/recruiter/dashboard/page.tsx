@@ -347,8 +347,8 @@ export default function RecruiterDashboard() {
                         </Link>
                     </div>
                 ) : (
-                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden overflow-x-auto">
-                        <table className="w-full text-sm text-left">
+                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-x-auto">
+                        <table className="w-full min-w-[800px] text-sm text-left">
                             <thead className="bg-white/5 text-white/60 text-xs font-semibold uppercase tracking-wide">
                                 <tr>
                                     <th className="px-6 py-4">Assessment Title</th>

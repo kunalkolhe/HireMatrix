@@ -82,6 +82,12 @@ export default function CandidateLayout({
     useEffect(() => {
         if (!user) return
 
+        // Route protection: If user is recruiter, redirect to recruiter dashboard
+        if (user.user_metadata?.role === 'recruiter' || user.user_metadata?.account_type === 'recruiter') {
+            window.location.href = '/recruiter/dashboard'
+            return
+        }
+
         const loadAvatar = async () => {
             // 1. Try Local Storage (Demo Fallback) - Highest priority for immediate updates
             const localAvatar = localStorage.getItem(`avatar_${user.id}`)

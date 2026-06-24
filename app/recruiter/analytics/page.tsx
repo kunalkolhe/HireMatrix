@@ -389,8 +389,8 @@ export default function AnalyticsPage() {
                                     size="sm"
                                     onClick={() => setDateRange(range)}
                                     className={dateRange === range
-                                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                                        : 'border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white'}
+                                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground border-transparent'
+                                        : 'bg-black/20 border-white/10 text-white/70 hover:bg-white/10 hover:text-white'}
                                 >
                                     {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : range === '90d' ? '90 Days' : 'All Time'}
                                 </Button>

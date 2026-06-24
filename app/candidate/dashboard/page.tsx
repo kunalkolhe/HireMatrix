@@ -215,10 +215,12 @@ export default function CandidateDashboard() {
         return `${Math.floor(diffInSeconds / 604800)}w ago`
     }
 
-    const filteredJobs = jobs.filter(job =>
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    const filteredJobs = jobs.filter(job => {
+        const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              job.company.toLowerCase().includes(searchQuery.toLowerCase());
+        const hasSubmitted = mySubmissions.some(sub => sub.jobId === job.id || sub.assessmentId === job.id);
+        return matchesSearch && !hasSubmitted;
+    })
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto">
@@ -332,14 +334,14 @@ export default function CandidateDashboard() {
                         <p className="text-sm text-white/40 mt-1">Discover and take assessments for active roles</p>
                     </div>
                     
-                    <div className="flex items-center w-full md:w-72 bg-[#13163a] p-1.5 rounded-lg border border-white/10 focus-within:ring-1 focus-within:ring-primary focus-within:border-transparent transition-all">
-                        <Search className="w-4 h-4 text-white/40 ml-2" />
+                    <div className="flex items-center w-full md:w-72 relative">
+                        <Search className="w-4 h-4 text-white/40 absolute left-3" />
                         <input
                             type="text"
                             placeholder="Search by title or company..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full text-sm outline-none bg-transparent text-white placeholder:text-white/40 px-2 py-1"
+                            className="input-clean w-full pl-9 h-10"
                         />
                     </div>
                 </div>

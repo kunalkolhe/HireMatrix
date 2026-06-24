@@ -30,7 +30,7 @@ export default function LoginPage() {
       if (error) throw error
 
       if (data.user) {
-        const accountType = data.user.user_metadata?.account_type
+        const accountType = data.user.user_metadata?.role || data.user.user_metadata?.account_type
         if (accountType === 'recruiter') {
           router.push('/recruiter/dashboard')
         } else {

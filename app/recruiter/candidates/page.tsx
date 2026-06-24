@@ -419,8 +419,8 @@ export default function CandidatesPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden overflow-x-auto">
-                        <table className="w-full">
+                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-x-auto">
+                        <table className="w-full min-w-[1000px] text-sm text-left">
                             <thead className="bg-white/5 text-white/60 text-xs font-semibold uppercase tracking-wide">
                                 <tr className="border-b border-white/8 bg-[#13163a]">
                                     <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">
