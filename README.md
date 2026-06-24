@@ -89,8 +89,8 @@ Before you begin, ensure you have:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd SkillZen-main
+git clone https://github.com/kunalkolhe/HireMatrix.git
+cd HireMatrix
 ```
 
 ### 2. Install Dependencies
@@ -127,8 +127,9 @@ APYHUB_API_KEY=your_apyhub_api_key
 
 2. **Run the Database Schema**:
    - Open Supabase SQL Editor
-   - Copy and paste the contents of `database-schema.sql`
-   - Execute the script
+   - Copy and paste the contents of `database/database-schema.sql`
+   - **Also run the additional policies**: `database/fix-submissions-rls.sql`, `database/fix-signup-trigger.sql`, etc.
+   - Execute the scripts
 
    This will create:
    - Tables: `jobs`, `assessments`, `questions`, `submissions`, `answers`, `scores`, `user_profiles`
@@ -136,59 +137,7 @@ APYHUB_API_KEY=your_apyhub_api_key
    - Indexes for performance
    - Triggers for automatic profile creation
 
-3. **Set Up Storage Buckets**:
-   
-   **For Profile Photos (`avatars` bucket):**
-   - Go to Supabase Dashboard → Storage
-   - Click "Create a new bucket"
-   - Name: `avatars`
-   - Make it **Public**
-   - Click "Create bucket"
-   - Add policies (or use SQL Editor):
-     ```sql
-     -- Allow authenticated users to upload their own avatars
-     CREATE POLICY "Users can upload own avatar"
-     ON storage.objects FOR INSERT
-     WITH CHECK (
-       bucket_id = 'avatars' AND
-       auth.uid()::text = (storage.foldername(name))[1]
-     );
-     
-     -- Allow public read access
-     CREATE POLICY "Public avatar access"
-     ON storage.objects FOR SELECT
-     USING (bucket_id = 'avatars');
-     ```
-   
-   **For Resumes (`resumes` bucket - Optional):**
-   - Create another bucket named `resumes`
-   - Make it **Public** (or Private with proper policies)
-   - Add policies:
-     ```sql
-     -- Allow authenticated users to upload their own resumes
-     CREATE POLICY "Users can upload own resume"
-     ON storage.objects FOR INSERT
-     WITH CHECK (
-       bucket_id = 'resumes' AND
-       auth.uid()::text = (storage.foldername(name))[1]
-     );
-     
-     -- Allow recruiters to view resumes
-     CREATE POLICY "Recruiters can view resumes"
-     ON storage.objects FOR SELECT
-     USING (
-       bucket_id = 'resumes' AND
-       EXISTS (
-         SELECT 1 FROM user_profiles
-         WHERE user_profiles.id = auth.uid()
-         AND user_profiles.role IN ('recruiter', 'admin')
-       )
-     );
-     ```
-   
-   **Note:** Resume file storage is optional. The parsed resume data is stored in the database, so the file storage is only for reference.
-
-4. **Verify Setup**:
+3. **Verify Setup**:
    - Check that all tables are created
    - Verify RLS policies are enabled
    - Test user creation to ensure trigger works
@@ -212,30 +161,28 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
-│   │   ├── parse-jd/            # Job description parsing
+│   │   ├── parse-jd/             # Job description parsing
 │   │   ├── generate-assessment/  # Question generation
-│   │   ├── evaluate/            # AI evaluation
-│   │   └── resume-parser-v2/    # Resume parsing
-│   ├── recruiter/               # Recruiter pages
-│   │   ├── dashboard/           # Main dashboard
-│   │   ├── jobs/                # Job management
-│   │   ├── candidates/          # Candidate management
-│   │   └── analytics/           # Analytics dashboard
-│   ├── candidate/               # Candidate pages
-│   │   ├── dashboard/           # Available assessments
-│   │   └── profile/             # Profile management
-│   └── test/                    # Assessment taking flow
-│       └── [id]/                # Dynamic assessment routes
+│   │   ├── evaluate/             # AI evaluation
+│   │   └── resume-parser/        # Resume parsing
+│   ├── recruiter/                # Recruiter pages
+│   │   ├── dashboard/            # Main dashboard
+│   │   ├── jobs/                 # Job management
+│   │   ├── candidates/           # Candidate management
+│   │   └── analytics/            # Analytics dashboard
+│   ├── candidate/                # Candidate pages
+│   │   ├── dashboard/            # Available assessments
+│   │   └── profile/              # Profile management
+│   └── test/                     # Assessment taking flow
+│       └── [id]/                 # Dynamic assessment routes
 ├── components/                   # Reusable UI components
 ├── lib/                          # Core services
-│   ├── jobService.ts            # Job/assessment management
-│   ├── submissionService.ts     # Submission handling
-│   ├── evaluationService.ts     # Scoring logic
-│   ├── plagiarismDetection.ts  # Plagiarism checks
-│   ├── botDetection.ts          # Bot detection
-│   └── benchmarkService.ts      # Benchmark comparison
-├── contexts/                     # React contexts
-├── database-schema.sql          # Database schema
+│   ├── jobService.ts             # Job/assessment management
+│   ├── submissionService.ts      # Submission handling
+│   ├── plagiarismDetection.ts    # Plagiarism checks
+│   ├── botDetection.ts           # Bot detection
+│   └── benchmarkService.ts       # Benchmark comparison
+├── database/                     # SQL scripts for database migrations and schema
 └── README.md                     # This file
 ```
 
@@ -329,7 +276,7 @@ Returns: Evaluation results with scores and feedback
 
 ### Resume Parsing
 ```
-POST /api/resume-parser-v2
+POST /api/resume-parser
 Body: { file: File }
 Returns: Parsed resume data with skills extraction
 ```
@@ -347,8 +294,9 @@ The database consists of:
 - **answers**: Individual question answers
 - **scores**: Evaluation scores and rankings
 - **user_profiles**: Extended user information
+- **resume_data**: Parsed candidate resumes
 
-See `database-schema.sql` for complete schema definition.
+See `database/database-schema.sql` for complete schema definition.
 
 ---
 
@@ -416,35 +364,12 @@ Questions are generated using AI with:
 
 ## 🤝 Contributing
 
-This is a hackathon project. For improvements:
+This is an ongoing project. For improvements:
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
-
----
-
-## 📄 License
-
-This project is created for hackathon purposes.
-
----
-
-## 🎓 Hackathon Requirements Status
-
-✅ **All Core Requirements Implemented**:
-- ✅ Job Description Intelligence
-- ✅ Automated Question Generation
-- ✅ Smart Candidate Evaluation
-- ✅ Anti-Fake Application Mechanism
-- ✅ Scoring, Ranking & Leaderboards
-- ✅ Detailed Candidate Analytics
-- ✅ Recruiter & Admin Controls
-- ✅ Fairness, Transparency & Explainability
-- ✅ Scalability & Security (Supabase integration)
-
-See `HACKATHON_REQUIREMENTS_CHECKLIST.md` for detailed status.
 
 ---
 
@@ -471,7 +396,7 @@ See `HACKATHON_REQUIREMENTS_CHECKLIST.md` for detailed status.
 
 For issues or questions:
 - Check the console for error messages
-- Review `database-schema.sql` for RLS policy issues
+- Review `database/database-schema.sql` for RLS policy issues
 - Verify all environment variables are set correctly
 
 ---
