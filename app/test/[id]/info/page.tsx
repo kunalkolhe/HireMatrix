@@ -19,7 +19,7 @@ export default function CandidateInfoPage() {
     const params = useParams()
     const router = useRouter()
     const assessmentId = params.id as string
-    const { parseResume } = useResume()
+    const { } = useResume()
     const { user, loading: authLoading } = useAuth()
 
     const [job, setJob] = useState<Job | null>(null)
@@ -31,12 +31,25 @@ export default function CandidateInfoPage() {
     const [errors, setErrors] = useState<{ name?: string, email?: string, resume?: string }>({})
 
     useEffect(() => {
-        const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+        const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
         const foundJob = savedJobs.find((j: Job) => j.id === assessmentId)
         if (foundJob) {
             setJob(foundJob)
         }
     }, [assessmentId])
+
+    // Check if already submitted
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const isSubmittedLocally = localStorage.getItem(`hirematrix_submitted_${assessmentId}`) === 'true'
+            const hasSubmissionSession = !!sessionStorage.getItem(`submission_${assessmentId}`)
+            
+            if (isSubmittedLocally || hasSubmissionSession) {
+                toast.info("You have already submitted this assessment.")
+                router.replace(`/test/${assessmentId}/submitted`)
+            }
+        }
+    }, [assessmentId, router])
 
     useEffect(() => {
         if (!authLoading && user) {
@@ -134,7 +147,8 @@ export default function CandidateInfoPage() {
             name: name.trim(),
             email: email.trim(),
             assessmentId,
-            startedAt: new Date().toISOString()
+            startedAt: new Date().toISOString(),
+            userId: user?.id
         }
         sessionStorage.setItem(`candidate_info_${assessmentId}`, JSON.stringify(candidateInfo))
 
@@ -142,16 +156,16 @@ export default function CandidateInfoPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
-            <div className="max-w-2xl w-full bg-white/5 border border-white/10 rounded-lg">
-                <div className="p-6 border-b border-white/10">
+        <div className="min-h-screen bg-[#0D1225] flex items-center justify-center p-4">
+            <div className="max-w-2xl w-full bg-[#13163a] border border-white/10 rounded-lg">
+                <div className="p-6 border-b border-white/8">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#E8C547]/10 rounded-lg flex items-center justify-center">
-                            <FileText className="w-5 h-5 text-[#E8C547]" />
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <FileText className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">Enter Your Details</h2>
-                            <p className="text-sm text-white/50">
+                            <p className="text-sm text-white/40">
                                 {job ? `${job.title} at ${job.company}` : 'Assessment'}
                             </p>
                         </div>
@@ -160,7 +174,7 @@ export default function CandidateInfoPage() {
 
                 <div className="p-6 space-y-6">
                     {/* Info Notice */}
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                    <div className="bg-primary/10 border border-blue-500/20 rounded-lg p-4">
                         <div className="flex items-start gap-3">
                             <CheckCircle2 className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                             <div className="text-sm text-blue-100">
@@ -185,7 +199,7 @@ export default function CandidateInfoPage() {
 
                     {/* Name Field */}
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-white/70">Full Name *</Label>
+                        <Label htmlFor="name" className="text-white/60">Full Name *</Label>
                         <Input
                             id="name"
                             placeholder="John Doe"
@@ -194,16 +208,16 @@ export default function CandidateInfoPage() {
                                 setName(e.target.value)
                                 setErrors(prev => ({ ...prev, name: undefined }))
                             }}
-                            className={`bg-white/5 border-white/10 text-white placeholder:text-white/30 ${errors.name ? 'border-red-500' : ''}`}
+                            className={`bg-[#13163a] border-white/10 text-white placeholder:text-white/40 ${errors.name ? 'border-red-500' : ''}`}
                         />
                         {errors.name && (
-                            <p className="text-sm text-red-400">{errors.name}</p>
+                            <p className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">{errors.name}</p>
                         )}
                     </div>
 
                     {/* Email Field */}
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-white/70">Email Address *</Label>
+                        <Label htmlFor="email" className="text-white/60">Email Address *</Label>
                         <Input
                             id="email"
                             type="email"
@@ -213,17 +227,17 @@ export default function CandidateInfoPage() {
                                 setEmail(e.target.value)
                                 setErrors(prev => ({ ...prev, email: undefined }))
                             }}
-                            className={`bg-white/5 border-white/10 text-white placeholder:text-white/30 ${errors.email ? 'border-red-500' : ''}`}
+                            className={`bg-[#13163a] border-white/10 text-white placeholder:text-white/40 ${errors.email ? 'border-red-500' : ''}`}
                         />
                         {errors.email && (
-                            <p className="text-sm text-red-400">{errors.email}</p>
+                            <p className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">{errors.email}</p>
                         )}
                     </div>
 
                     {/* Resume Upload */}
                     <div className="space-y-2">
-                        <Label htmlFor="resume" className="text-white/70">Resume (Optional)</Label>
-                        <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-[#E8C547]/50 transition-colors">
+                        <Label htmlFor="resume" className="text-white/60">Resume (Optional)</Label>
+                        <div className="border-2 border-dashed border-white/10 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                             <input
                                 type="file"
                                 id="resume"
@@ -234,7 +248,7 @@ export default function CandidateInfoPage() {
                             <label htmlFor="resume" className="cursor-pointer">
                                 {resumeFileName ? (
                                     <div className="space-y-2">
-                                        <FileText className="w-8 h-8 text-[#E8C547] mx-auto" />
+                                        <FileText className="w-8 h-8 text-primary mx-auto" />
                                         <div className="font-medium text-white">{resumeFileName}</div>
                                         <Button
                                             type="button"
@@ -245,7 +259,7 @@ export default function CandidateInfoPage() {
                                                 setResumeFile(null)
                                                 setResumeFileName("")
                                             }}
-                                            className="text-white/60 hover:text-white hover:bg-white/10"
+                                            className="text-white/60 hover:text-white hover:bg-[#13163a]"
                                         >
                                             Remove
                                         </Button>
@@ -254,7 +268,7 @@ export default function CandidateInfoPage() {
                                     <div className="space-y-2">
                                         <Upload className="w-8 h-8 text-white/40 mx-auto" />
                                         <div className="text-sm text-white/60">
-                                            <span className="text-[#E8C547] font-medium">Click to upload</span> or drag and drop
+                                            <span className="text-primary font-medium">Click to upload</span> or drag and drop
                                         </div>
                                         <div className="text-xs text-white/40">PDF, DOC, DOCX, or TXT (max 5MB)</div>
                                     </div>
@@ -262,7 +276,7 @@ export default function CandidateInfoPage() {
                             </label>
                         </div>
                         {errors.resume && (
-                            <p className="text-sm text-red-400">{errors.resume}</p>
+                            <p className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">{errors.resume}</p>
                         )}
                         {uploading && (
                             <p className="text-sm text-blue-400">Parsing resume...</p>
@@ -274,14 +288,14 @@ export default function CandidateInfoPage() {
                         <Button
                             variant="outline"
                             onClick={() => router.back()}
-                            className="flex-1 border-white/10 text-white hover:bg-white/10"
+                            className="flex-1 border-white/10 text-white hover:bg-[#13163a]"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Back
                         </Button>
                         <Button
                             onClick={handleContinue}
-                            className="flex-1 bg-[#E8C547] hover:bg-[#E8C547]/90 text-black"
+                            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                             disabled={uploading}
                         >
                             Continue to Assessment

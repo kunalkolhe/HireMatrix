@@ -60,6 +60,8 @@ export interface AssessmentConfig {
   shuffle_questions: boolean
   show_results_immediately: boolean
   allow_retake: boolean
+  duration_minutes?: number
+  passing_percentage?: number
 }
 
 // Questions

@@ -861,7 +861,7 @@ async function tryAPILayerFallback(file: File) {
         headers: {
           'apikey': APILAYER_API_KEY!,
           'Content-Type': 'application/octet-stream',
-          'User-Agent': 'AssessAI-Resume-Parser/1.0',
+          'User-Agent': 'HireMatrix-Resume-Parser/1.0',
         },
         body: buffer,
         signal: controller.signal,
@@ -877,7 +877,7 @@ async function tryAPILayerFallback(file: File) {
           headers: {
             'apikey': APILAYER_API_KEY!,
             'Content-Type': 'application/octet-stream',
-            'User-Agent': 'AssessAI-Resume-Parser/1.0',
+            'User-Agent': 'HireMatrix-Resume-Parser/1.0',
           },
           body: buffer,
         })

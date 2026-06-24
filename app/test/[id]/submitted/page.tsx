@@ -44,7 +44,7 @@ export default function SubmittedPage() {
                         company: supabaseJob.company || ''
                     })
                 } else {
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const foundJob = savedJobs.find((j: any) => j.id === assessmentId)
                     if (foundJob) {
                         setJob(foundJob)
@@ -52,7 +52,7 @@ export default function SubmittedPage() {
                 }
             } catch (error) {
                 console.error('Error loading job:', error)
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const foundJob = savedJobs.find((j: any) => j.id === assessmentId)
                 if (foundJob) {
                     setJob(foundJob)
@@ -64,14 +64,14 @@ export default function SubmittedPage() {
     }, [assessmentId])
 
     return (
-        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
-            <div className="max-w-2xl w-full bg-white/5 border border-white/10 rounded-lg">
+        <div className="min-h-screen bg-[#0D1225] flex items-center justify-center p-4">
+            <div className="max-w-2xl w-full bg-[#13163a] border border-white/10 rounded-lg">
                 <div className="pt-12 pb-8 px-8 text-center">
                     <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                        <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                     </div>
 
-                    <h2 className="text-3xl font-bold text-white mb-3">
+                    <h2 className="text-3xl font-bold font-mono text-white mb-3">
                         Assessment Submitted Successfully!
                     </h2>
 
@@ -79,31 +79,31 @@ export default function SubmittedPage() {
                         Thank you for completing the assessment for <span className="font-semibold text-white">{job?.title}</span> at <span className="font-semibold text-white">{job?.company}</span>.
                     </p>
 
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6 mb-8 text-left">
+                    <div className="bg-primary/10 border border-blue-500/20 rounded-lg p-6 mb-8 text-left">
                         <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-[#E8C547]" />
+                            <FileText className="w-5 h-5 text-primary" />
                             What Happens Next?
                         </h3>
-                        <ul className="space-y-3 text-sm text-white/70">
+                        <ul className="space-y-3 text-sm text-white/60">
                             <li className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                                 <div>
                                     <div className="font-medium text-white">Your responses are being evaluated</div>
-                                    <div className="text-white/50">Our AI system is analyzing your answers and resume.</div>
+                                    <div className="text-white/40">Our AI system is analyzing your answers and resume.</div>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                                 <div>
                                     <div className="font-medium text-white">Recruiter will review your assessment</div>
-                                    <div className="text-white/50">The hiring team will be notified and review your submission.</div>
+                                    <div className="text-white/40">The hiring team will be notified and review your submission.</div>
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                                <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                                 <div>
                                     <div className="font-medium text-white">You'll hear back soon</div>
-                                    <div className="text-white/50">If selected, the recruiter will contact you via email.</div>
+                                    <div className="text-white/40">If selected, the recruiter will contact you via email.</div>
                                 </div>
                             </li>
                         </ul>
@@ -113,7 +113,7 @@ export default function SubmittedPage() {
                         {user ? (
                             <Button
                                 onClick={() => router.push('/candidate/dashboard')}
-                                className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                             >
                                 <LayoutDashboard className="w-4 h-4 mr-2" />
                                 Go to Dashboard
@@ -122,7 +122,7 @@ export default function SubmittedPage() {
                             <Button
                                 variant="outline"
                                 onClick={() => router.push('/')}
-                                className="border-white/10 text-white hover:bg-white/10"
+                                className="border-white/10 text-white hover:bg-[#13163a]"
                             >
                                 <Home className="w-4 h-4 mr-2" />
                                 Go to Homepage

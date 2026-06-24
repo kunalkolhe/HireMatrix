@@ -41,11 +41,11 @@ function calculatePercentile(value: number, values: number[]): number {
 /**
  * Get benchmark comparison for a candidate
  */
-export function getBenchmarkComparison(
+export async function getBenchmarkComparison(
     submission: CandidateSubmission,
     assessmentId?: string
-): BenchmarkComparison {
-    const allSubmissions = getAllSubmissions()
+): Promise<BenchmarkComparison> {
+    const allSubmissions = await getAllSubmissions()
     
     // Filter submissions for same assessment (or all if not specified)
     const relevantSubmissions = assessmentId

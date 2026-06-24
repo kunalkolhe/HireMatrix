@@ -66,7 +66,7 @@ export default function RecruiterDashboard() {
                     }))
                     setJobs(formattedJobs)
                 } else {
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const migratedJobs = await Promise.all(savedJobs.map(async (job: any) => {
                         const submissions = await getSubmissionsByJob(job.id)
                         return {
@@ -81,7 +81,7 @@ export default function RecruiterDashboard() {
                 }
             } catch (error) {
                 console.error('Error loading jobs:', error)
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const migratedJobs = await Promise.all(savedJobs.map(async (job: any) => {
                     const submissions = await getSubmissionsByJob(job.id)
                     return {
@@ -101,7 +101,7 @@ export default function RecruiterDashboard() {
         loadJobs()
 
         const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'recruiter_submissions' || e.key === 'assessai_jobs') {
+            if (e.key === 'recruiter_submissions' || e.key === 'hirematrix_jobs') {
                 loadJobs()
             }
         }
@@ -164,14 +164,14 @@ export default function RecruiterDashboard() {
             if (!deleted) {
                 // If Supabase delete fails, try localStorage as fallback
                 console.warn('Supabase delete failed, trying localStorage fallback')
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const updatedJobs = savedJobs.filter((job: any) => job.id !== jobId)
-                localStorage.setItem('assessai_jobs', JSON.stringify(updatedJobs))
+                localStorage.setItem('hirematrix_jobs', JSON.stringify(updatedJobs))
             } else {
                 // Also clean up localStorage if it exists
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const updatedJobs = savedJobs.filter((job: any) => job.id !== jobId)
-                localStorage.setItem('assessai_jobs', JSON.stringify(updatedJobs))
+                localStorage.setItem('hirematrix_jobs', JSON.stringify(updatedJobs))
             }
 
             // Reload jobs from Supabase
@@ -189,7 +189,7 @@ export default function RecruiterDashboard() {
                 setJobs(formattedJobs)
             } else {
                 // Fallback to localStorage
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const migratedJobs = await Promise.all(savedJobs.map(async (job: any) => {
                     const submissions = await getSubmissionsByJob(job.id)
                     return {
@@ -245,7 +245,7 @@ export default function RecruiterDashboard() {
                     <p className="text-white/40">Welcome back, {user?.email?.split('@')[0]}</p>
                 </div>
                 <Link href="/recruiter/jobs/new">
-                    <Button className="bg-white text-black hover:bg-white/90">
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20">
                         <Plus className="w-4 h-4 mr-2" />
                         Create New Assessment
                     </Button>
@@ -260,15 +260,15 @@ export default function RecruiterDashboard() {
                     { label: "Total Candidates", value: stats.totalCandidates, icon: Users, change: "+12% vs last month" },
                     { label: "Avg. Completion Time", value: `${stats.avgTime}m`, icon: Clock, change: "-5%" }
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/[0.07] transition-colors">
+                    <div key={i} className="bg-[#13163a] border border-white/10 rounded-xl p-6 hover:bg-white/[0.07] transition-colors">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="p-2 bg-white/10 text-white rounded-lg">
+                            <span className="p-2 bg-[#13163a] text-white rounded-lg">
                                 <stat.icon className="w-4 h-4" />
                             </span>
                             {i === 2 ? (
-                                <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full">{stat.change}</span>
+                                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{stat.change}</span>
                             ) : (
-                                <span className="text-xs text-white/30">{stat.change}</span>
+                                <span className="text-xs text-white/40">{stat.change}</span>
                             )}
                         </div>
                         <div className="text-2xl font-semibold text-white">{stat.value}</div>
@@ -278,38 +278,38 @@ export default function RecruiterDashboard() {
             </div>
 
             {/* ========== RECENT JOBS ========== */}
-            <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden">
+                <div className="p-6 border-b border-white/8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h2 className="text-lg font-semibold text-white">Recent Assessments</h2>
                     <div className="flex items-center gap-2">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                             <input
                                 type="text"
                                 placeholder="Search assessments..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 pr-4 py-2 h-9 text-sm bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-white/20 text-white placeholder:text-white/30 w-64"
+                                className="pl-9 pr-4 py-2 h-9 text-sm bg-[#13163a] border border-white/10 rounded-lg focus:outline-none focus:border-white/10 text-white placeholder:text-white/40 w-64"
                             />
                             {searchQuery && (
                                 <button
                                     onClick={() => setSearchQuery("")}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
                             )}
                         </div>
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-[140px] h-9 bg-white/5 border-white/10 text-white [&>span]:text-white">
+                            <SelectTrigger className="w-[140px] h-9 bg-[#13163a] border-white/10 text-white [&>span]:text-white">
                                 <Filter className="w-4 h-4 mr-2" />
                                 <SelectValue placeholder="Filter by status" className="text-white" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a1a1a] border-white/10">
-                                <SelectItem value="all" className="text-white focus:bg-white/10 focus:text-white">All Status</SelectItem>
-                                <SelectItem value="active" className="text-white focus:bg-white/10 focus:text-white">Active</SelectItem>
-                                <SelectItem value="draft" className="text-white focus:bg-white/10 focus:text-white">Draft</SelectItem>
-                                <SelectItem value="closed" className="text-white focus:bg-white/10 focus:text-white">Closed</SelectItem>
+                            <SelectContent className="bg-[#0D1225] border-white/10">
+                                <SelectItem value="all" className="text-white focus:bg-[#13163a] focus:text-white">All Status</SelectItem>
+                                <SelectItem value="active" className="text-white focus:bg-[#13163a] focus:text-white">Active</SelectItem>
+                                <SelectItem value="draft" className="text-white focus:bg-[#13163a] focus:text-white">Draft</SelectItem>
+                                <SelectItem value="closed" className="text-white focus:bg-[#13163a] focus:text-white">Closed</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -317,8 +317,8 @@ export default function RecruiterDashboard() {
 
                 {filteredJobs.length === 0 && jobs.length > 0 ? (
                     <div className="p-12 text-center">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Search className="w-8 h-8 text-white/20" />
+                        <div className="w-16 h-16 bg-[#13163a] rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Search className="w-8 h-8 text-white/40" />
                         </div>
                         <h3 className="text-lg font-medium text-white">No assessments found</h3>
                         <p className="text-white/40 mb-6">Try adjusting your search or filter criteria.</p>
@@ -328,28 +328,28 @@ export default function RecruiterDashboard() {
                                 setSearchQuery("")
                                 setStatusFilter("all")
                             }}
-                            className="border-white/10 text-white hover:bg-white/10"
+                            className="border-white/10 text-white hover:bg-[#13163a]"
                         >
                             Clear Filters
                         </Button>
                     </div>
                 ) : jobs.length === 0 ? (
                     <div className="p-12 text-center">
-                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <FileText className="w-8 h-8 text-white/20" />
+                        <div className="w-16 h-16 bg-[#13163a] rounded-full flex items-center justify-center mx-auto mb-4">
+                            <FileText className="w-8 h-8 text-white/40" />
                         </div>
                         <h3 className="text-lg font-medium text-white">No assessments yet</h3>
                         <p className="text-white/40 mb-6">Get started by creating your first job assessment.</p>
                         <Link href="/recruiter/jobs/new">
-                            <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
+                            <Button variant="outline" className="border-white/10 text-white hover:bg-[#13163a]">
                                 Create Assessment
                             </Button>
                         </Link>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden overflow-x-auto">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-white/5 text-white/40 font-medium border-b border-white/10">
+                            <thead className="bg-white/5 text-white/60 text-xs font-semibold uppercase tracking-wide">
                                 <tr>
                                     <th className="px-6 py-4">Assessment Title</th>
                                     <th className="px-6 py-4">Status</th>
@@ -360,7 +360,7 @@ export default function RecruiterDashboard() {
                             </thead>
                             <tbody className="divide-y divide-white/5">
                                 {filteredJobs.map((job) => (
-                                    <tr key={job.id} className="hover:bg-white/5 transition-colors cursor-pointer group">
+                                    <tr key={job.id} className="hover:bg-[#13163a] transition-colors cursor-pointer group">
                                         <td className="px-6 py-4">
                                             <div className="font-medium text-white">{job.title}</div>
                                             <div className="text-xs text-white/40">{job.company}</div>
@@ -368,21 +368,19 @@ export default function RecruiterDashboard() {
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${(job.status || 'draft') === 'active'
                                                 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                : 'bg-white/10 text-white/60 border border-white/10'
+                                                : 'bg-[#13163a] text-white/60 border border-white/10'
                                                 }`}>
                                                 {(job.status || 'draft').charAt(0).toUpperCase() + (job.status || 'draft').slice(1)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2 text-white/60">
-                                                <Users className="w-4 h-4 text-white/30" />
+                                                <Users className="w-4 h-4 text-white/40" />
                                                 <span>{job.candidatesCount || 0}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-white/40">
-                                            {job.createdAt ? new Date(job.createdAt).toLocaleDateString() :
-                                                job.created_at ? new Date(job.created_at).toLocaleDateString() :
-                                                    'N/A'}
+                                            {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center gap-2 justify-end">
@@ -390,7 +388,7 @@ export default function RecruiterDashboard() {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => copyAssessmentLink(job.id)}
-                                                    className="h-8 bg-transparent border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
+                                                    className="h-8 bg-transparent border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white"
                                                 >
                                                     {copiedId === job.id ? (
                                                         <>
@@ -406,29 +404,29 @@ export default function RecruiterDashboard() {
                                                 </Button>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-white/40 hover:text-white hover:bg-white/10">
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-white/40 hover:text-white hover:bg-[#13163a]">
                                                             <MoreHorizontal className="w-4 h-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-48 bg-[#1a1a1a] border-white/10">
+                                                    <DropdownMenuContent align="end" className="w-48 bg-[#0D1225] border-white/10">
                                                         <DropdownMenuLabel className="text-white/60">Actions</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator className="bg-white/10" />
-                                                        <DropdownMenuItem onClick={() => handleViewAssessment(job.id)} className="text-white/80 focus:bg-white/10 focus:text-white">
+                                                        <DropdownMenuSeparator className="bg-[#13163a]" />
+                                                        <DropdownMenuItem onClick={() => handleViewAssessment(job.id)} className="text-white focus:bg-[#13163a] focus:text-white cursor-pointer">
                                                             <Eye className="w-4 h-4 mr-2" />
                                                             View Details
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => handleEditAssessment(job.id)} className="text-white/80 focus:bg-white/10 focus:text-white">
+                                                        <DropdownMenuItem onClick={() => handleEditAssessment(job.id)} className="text-white focus:bg-[#13163a] focus:text-white cursor-pointer">
                                                             <Edit className="w-4 h-4 mr-2" />
                                                             Edit Assessment
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => copyAssessmentLink(job.id)} className="text-white/80 focus:bg-white/10 focus:text-white">
+                                                        <DropdownMenuItem onClick={() => copyAssessmentLink(job.id)} className="text-white focus:bg-[#13163a] focus:text-white cursor-pointer">
                                                             <LinkIcon className="w-4 h-4 mr-2" />
                                                             Copy Link
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuSeparator className="bg-white/10" />
+                                                        <DropdownMenuSeparator className="bg-[#13163a]" />
                                                         <DropdownMenuItem
                                                             onClick={() => handleDeleteAssessment(job.id, job.title)}
-                                                            className="text-red-400 focus:text-red-400 focus:bg-red-500/10"
+                                                            className="text-red-400 focus:bg-red-500/10 focus:text-red-400 cursor-pointer"
                                                         >
                                                             <Trash2 className="w-4 h-4 mr-2" />
                                                             Delete

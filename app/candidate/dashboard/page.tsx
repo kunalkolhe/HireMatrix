@@ -74,7 +74,7 @@ export default function CandidateDashboard() {
                     setJobs(formattedJobs)
                 } else {
                     // Fallback to localStorage
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const activeJobs = savedJobs.filter((job: Job) =>
                         (job.status || 'draft') === 'active' && job.questions && job.questions.length > 0
                     )
@@ -92,7 +92,7 @@ export default function CandidateDashboard() {
             } catch (error) {
                 console.error('Error loading jobs:', error)
                 // Fallback to localStorage
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const activeJobs = savedJobs.filter((job: Job) =>
                     (job.status || 'draft') === 'active' && job.questions && job.questions.length > 0
                 )
@@ -222,264 +222,185 @@ export default function CandidateDashboard() {
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto">
-            {/* ========== HERO SEARCH ========== */}
-            <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center">
-                <h1 className="text-2xl font-bold text-white mb-2">Find your next opportunity</h1>
-                <p className="text-white/50 mb-8 max-w-xl mx-auto">Search through thousands of active job postings and take AI-powered assessments to prove your skills.</p>
-
-                <div className="flex max-w-2xl mx-auto gap-2 bg-white/5 p-2 rounded-lg border border-white/10 focus-within:ring-2 focus-within:ring-[#E8C547] focus-within:border-transparent">
-                    <div className="flex-1 flex items-center px-3">
-                        <Search className="w-5 h-5 text-white/40 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search assessments by title or company..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full text-sm outline-none bg-transparent text-white placeholder:text-white/40"
+            {/* ========== WELCOME & QUICK STATS ========== */}
+            <div className="grid md:grid-cols-3 gap-4">
+                <div className="md:col-span-2 bg-[#13163a] rounded-xl border border-white/10 p-8 flex flex-col justify-center">
+                    <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {user?.user_metadata?.full_name || 'Candidate'}!</h1>
+                    <p className="text-white/40 max-w-xl">Ready to showcase your skills? Check your pending assessments below or discover new opportunities.</p>
+                </div>
+                <div className="bg-[#13163a] rounded-xl border border-white/10 p-6 flex flex-col justify-center items-center">
+                    <div className="flex justify-between items-center w-full mb-4">
+                        <h3 className="font-bold text-white text-sm">Profile Strength</h3>
+                        <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full capitalize">
+                            {profileStrength.level}
+                        </span>
+                    </div>
+                    <div className="w-full bg-[#0a0c27] rounded-full h-3 mb-2 border border-white/5">
+                        <div
+                            className="bg-primary h-3 rounded-full transition-all duration-300"
+                            style={{ width: `${profileStrength.percentage}%` }}
                         />
+                    </div>
+                    <div className="flex justify-between w-full mt-2">
+                        <span className="text-xs text-white/40">{profileStrength.percentage}% Complete</span>
+                        {(!user?.email || !user?.user_metadata?.full_name) && (
+                            <Link href="/candidate/profile" className="text-xs text-primary hover:underline">Update Profile</Link>
+                        )}
                     </div>
                 </div>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-                {/* ========== JOB FEED ========== */}
-                <div className="md:col-span-2 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold text-white">Recommended for you</h2>
-                        <Link href="#" className="text-sm font-semibold text-[#E8C547] hover:underline">View all</Link>
+            {/* ========== MY ASSESSMENTS ========== */}
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-white">My Assessments</h2>
+                    <Link href="/candidate/achievements" className="text-sm font-semibold text-primary hover:underline">View History</Link>
+                </div>
+                
+                {mySubmissions.length === 0 ? (
+                    <div className="bg-[#13163a] border border-white/10 rounded-lg p-12 text-center">
+                        <div className="w-16 h-16 bg-[#0a0c27] rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                            <Briefcase className="w-8 h-8 text-white/20" />
+                        </div>
+                        <h3 className="text-lg font-medium text-white mb-2">No active assessments</h3>
+                        <p className="text-white/40">Start an assessment from the opportunities below to see it here.</p>
                     </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {mySubmissions.map((submission) => {
+                            const getStatusColor = (status: string) => {
+                                if (status === 'evaluated' || status === 'shortlisted') return 'text-green-400 bg-green-400/10 border-green-400/20'
+                                if (status === 'rejected') return 'text-red-400 bg-red-400/10 border-red-400/20'
+                                if (status === 'submitted') return 'text-blue-400 bg-blue-400/10 border-blue-400/20'
+                                return 'text-amber-400 bg-amber-400/10 border-amber-400/20'
+                            }
 
-                    {loading ? (
-                        <div className="flex items-center justify-center py-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#E8C547] border-t-transparent" />
-                        </div>
-                    ) : filteredJobs.length === 0 ? (
-                        <div className="bg-white/5 border border-white/10 rounded-lg p-12 text-center">
-                            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <FileText className="w-8 h-8 text-white/30" />
-                            </div>
-                            <h3 className="text-lg font-medium text-white mb-2">
-                                {jobs.length === 0 ? 'No assessments available' : 'No assessments match your search'}
-                            </h3>
-                            <p className="text-white/50">
-                                {jobs.length === 0
-                                    ? 'Check back later for new assessment opportunities.'
-                                    : 'Try adjusting your search terms.'}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {filteredJobs.map((job) => {
-                                const allSkills = [
-                                    ...(job.parsed_skills?.technical || []),
-                                    ...(job.parsed_skills?.tools || []),
-                                    ...(job.parsed_skills?.domain_knowledge || [])
-                                ]
-                                const mcqCount = job.questions?.filter(q => q.type === 'mcq').length || job.config?.mcq_count || 0
-                                const subjCount = job.questions?.filter(q => q.type === 'subjective').length || job.config?.subjective_count || 0
-                                const codingCount = job.questions?.filter(q => q.type === 'coding').length || job.config?.coding_count || 0
+                            const getStatusText = (status: string) => {
+                                if (status === 'evaluated') return 'Evaluated'
+                                if (status === 'shortlisted') return 'Shortlisted'
+                                if (status === 'rejected') return 'Not Selected'
+                                if (status === 'submitted') return 'Under Review'
+                                return 'Pending Completion'
+                            }
 
-                                return (
-                                    <div key={job.id} className="bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/[0.08] transition-colors group">
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex gap-4 flex-1">
-                                                <div className="w-12 h-12 rounded bg-gradient-to-br from-[#E8C547] to-amber-600 flex items-center justify-center text-black font-bold text-xl uppercase">
-                                                    {job.company.charAt(0)}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <h3 className="font-bold text-white group-hover:text-[#E8C547] transition-colors">{job.title}</h3>
-                                                        {job.experience_level && (
-                                                            <Badge variant="secondary" className="text-xs capitalize bg-white/10 text-white/70 border-white/10">
-                                                                {job.experience_level}
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                    <p className="text-sm text-white/60 mb-3">{job.company}</p>
-
-                                                    {/* Skills */}
-                                                    {allSkills.length > 0 && (
-                                                        <div className="flex flex-wrap gap-2 mb-3">
-                                                            {allSkills.slice(0, 5).map((skill, idx) => (
-                                                                <Badge key={idx} variant="outline" className="text-xs border-white/10 text-white/60">
-                                                                    {skill}
-                                                                </Badge>
-                                                            ))}
-                                                            {allSkills.length > 5 && (
-                                                                <Badge variant="outline" className="text-xs text-white/40 border-white/10">
-                                                                    +{allSkills.length - 5} more
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                    )}
-
-                                                    <div className="flex flex-wrap gap-4 text-xs text-white/50 mb-3">
-                                                        <span className="flex items-center gap-1">
-                                                            <Clock className="w-3 h-3" />
-                                                            {job.config?.duration_minutes || 60} mins
-                                                        </span>
-                                                        {mcqCount > 0 && (
-                                                            <span className="flex items-center gap-1 text-blue-400">
-                                                                <FileText className="w-3 h-3" />
-                                                                {mcqCount} MCQs
-                                                            </span>
-                                                        )}
-                                                        {subjCount > 0 && (
-                                                            <span className="flex items-center gap-1 text-purple-400">
-                                                                <MessageSquare className="w-3 h-3" />
-                                                                {subjCount} Subjective
-                                                            </span>
-                                                        )}
-                                                        {codingCount > 0 && (
-                                                            <span className="flex items-center gap-1 text-green-400">
-                                                                <Code className="w-3 h-3" />
-                                                                {codingCount} Coding
-                                                            </span>
-                                                        )}
-                                                        <span className="flex items-center gap-1">
-                                                            <Briefcase className="w-3 h-3" />
-                                                            {job.posted}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Link href={`/test/${job.id}`}>
-                                                <Button className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black">
-                                                    Start Assessment
-                                                    <ArrowRight className="w-4 h-4 ml-2" />
+                            return (
+                                <div key={submission.id} className="bg-[#13163a] border border-white/10 rounded-lg p-6 hover:bg-white/[0.04] transition-colors flex flex-col">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 className="font-bold text-white text-lg">{submission.jobTitle || 'Assessment'}</h3>
+                                            <p className="text-sm text-white/40">{submission.company}</p>
+                                        </div>
+                                        <Badge variant="outline" className={`border ${getStatusColor(submission.status || 'pending')}`}>
+                                            {getStatusText(submission.status || 'pending')}
+                                        </Badge>
+                                    </div>
+                                    
+                                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-white/40">Score</span>
+                                            <span className="font-medium text-white">
+                                                {submission.scores?.percentage !== undefined ? `${submission.scores.percentage}%` : '--'}
+                                            </span>
+                                        </div>
+                                        
+                                        {submission.status === 'pending' || !submission.status ? (
+                                            <Link href={`/test/${submission.jobId || submission.assessmentId}`}>
+                                                <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                                                    Continue Assessment
                                                 </Button>
                                             </Link>
+                                        ) : (
+                                            <Link href="/candidate/achievements">
+                                                <Button size="sm" variant="outline" className="border-white/10 text-white hover:bg-[#0a0c27]">
+                                                    View Details
+                                                </Button>
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                )}
+            </div>
+
+            {/* ========== AVAILABLE OPPORTUNITIES ========== */}
+            <div className="space-y-6 pt-4 border-t border-white/10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-white">Available Opportunities</h2>
+                        <p className="text-sm text-white/40 mt-1">Discover and take assessments for active roles</p>
+                    </div>
+                    
+                    <div className="flex items-center w-full md:w-72 bg-[#13163a] p-1.5 rounded-lg border border-white/10 focus-within:ring-1 focus-within:ring-primary focus-within:border-transparent transition-all">
+                        <Search className="w-4 h-4 text-white/40 ml-2" />
+                        <input
+                            type="text"
+                            placeholder="Search by title or company..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full text-sm outline-none bg-transparent text-white placeholder:text-white/40 px-2 py-1"
+                        />
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
+                    </div>
+                ) : filteredJobs.length === 0 ? (
+                    <div className="bg-[#13163a] border border-white/10 rounded-lg p-12 text-center">
+                        <div className="w-16 h-16 bg-[#0a0c27] rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                            <Search className="w-8 h-8 text-white/20" />
+                        </div>
+                        <h3 className="text-lg font-medium text-white mb-2">No matching opportunities</h3>
+                        <p className="text-white/40">Try adjusting your search terms or check back later.</p>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filteredJobs.map((job) => {
+                            const allSkills = [
+                                ...(job.parsed_skills?.technical || []),
+                                ...(job.parsed_skills?.tools || []),
+                                ...(job.parsed_skills?.domain_knowledge || [])
+                            ]
+                            
+                            return (
+                                <div key={job.id} className="bg-[#13163a] border border-white/10 rounded-lg p-5 hover:bg-white/[0.04] transition-colors flex flex-col group">
+                                    <div className="flex items-start gap-3 mb-4">
+                                        <div className="w-10 h-10 rounded bg-gradient-to-br from-[#E8C547] to-amber-600 flex items-center justify-center text-primary-foreground font-bold text-lg uppercase shadow-lg">
+                                            {job.company.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-white group-hover:text-primary transition-colors text-base line-clamp-1" title={job.title}>{job.title}</h3>
+                                            <p className="text-xs text-white/60">{job.company}</p>
                                         </div>
                                     </div>
-                                )
-                            })}
-                        </div>
-                    )}
-                </div>
-
-                {/* ========== SIDEBAR WIDGETS ========== */}
-                <div className="space-y-6">
-                    {/* Profile Strength */}
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-bold text-white">Profile Strength</h3>
-                            <span className="text-xs font-semibold text-[#E8C547] bg-[#E8C547]/10 px-2 py-1 rounded-full capitalize">
-                                {profileStrength.level}
-                            </span>
-                        </div>
-                        <div className="w-full bg-white/10 rounded-full h-2 mb-2">
-                            <div
-                                className="bg-[#E8C547] h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${profileStrength.percentage}%` }}
-                            />
-                        </div>
-                        <p className="text-xs text-white/50 mb-4">
-                            {profileStrength.percentage < 50
-                                ? 'Complete assessments to improve your profile strength.'
-                                : profileStrength.percentage < 80
-                                    ? 'Great progress! Keep completing assessments.'
-                                    : 'Excellent! You have a strong profile.'}
-                        </p>
-                        {(!user?.email || !user?.user_metadata?.full_name) && (
-                            <Link href="/candidate/profile">
-                                <Button variant="outline" size="sm" className="w-full border-white/10 text-white hover:bg-white/10">Update Profile</Button>
-                            </Link>
-                        )}
-                    </div>
-
-                    {/* Resume Status */}
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-bold text-white">Resume Status</h3>
-                            <Link href="/candidate/resume">
-                                <Button variant="outline" size="sm" className="border-white/10 text-white hover:bg-white/10">
-                                    <FileText className="w-4 h-4 mr-2" />
-                                    {hasResume ? 'Update' : 'Upload'}
-                                </Button>
-                            </Link>
-                        </div>
-                        {hasResume ? (
-                            <div className="flex items-center gap-2 text-sm text-emerald-400">
-                                <CheckCircle className="w-4 h-4" />
-                                <span>Resume uploaded</span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-2 text-sm text-amber-400">
-                                <AlertTriangle className="w-4 h-4" />
-                                <span>Resume required</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Active Assessments */}
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                        <h3 className="font-bold text-white mb-4">My Assessments</h3>
-                        {mySubmissions.length === 0 ? (
-                            <div className="text-center py-4">
-                                <p className="text-xs text-white/50 mb-3">No assessments yet</p>
-                                <p className="text-xs text-white/40">Start an assessment to see it here</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {mySubmissions
-                                    .filter(s => s.status === 'pending' || s.status === 'submitted' || !s.status)
-                                    .slice(0, 3)
-                                    .map((submission) => {
-                                        const getStatusColor = (status: string) => {
-                                            if (status === 'evaluated' || status === 'shortlisted') return 'text-green-400'
-                                            if (status === 'rejected') return 'text-red-400'
-                                            return 'text-orange-400'
-                                        }
-
-                                        const getStatusText = (status: string) => {
-                                            if (status === 'evaluated') return 'Evaluated'
-                                            if (status === 'shortlisted') return 'Shortlisted'
-                                            if (status === 'rejected') return 'Rejected'
-                                            if (status === 'submitted') return 'Submitted'
-                                            return 'Pending'
-                                        }
-
-                                        return (
-                                            <div key={submission.id} className="pb-4 border-b border-white/10 last:border-0 last:pb-0">
-                                                <div className="flex justify-between mb-2">
-                                                    <span className="text-sm font-semibold text-white truncate">
-                                                        {submission.jobTitle || 'Assessment'}
-                                                    </span>
-                                                    <span className={`text-xs font-medium ${getStatusColor(submission.status || 'pending')}`}>
-                                                        {getStatusText(submission.status || 'pending')}
-                                                    </span>
-                                                </div>
-                                                <p className="text-xs text-white/50 mb-1">{submission.company}</p>
-                                                {submission.scores?.percentage !== undefined && (
-                                                    <p className="text-xs text-white/60 mb-3">
-                                                        Score: {submission.scores.percentage}%
-                                                    </p>
-                                                )}
-                                                {submission.status === 'pending' || submission.status === 'submitted' ? (
-                                                    <Link href={`/test/${submission.jobId || submission.assessmentId}`}>
-                                                        <Button size="sm" className="w-full text-xs h-8 bg-[#E8C547] hover:bg-[#E8C547]/90 text-black">
-                                                            {submission.status === 'submitted' ? 'View Results' : 'Continue Assessment'}
-                                                        </Button>
-                                                    </Link>
-                                                ) : (
-                                                    <Link href="/candidate/achievements">
-                                                        <Button size="sm" variant="outline" className="w-full text-xs h-8 border-white/10 text-white hover:bg-white/10">
-                                                            View Results
-                                                        </Button>
-                                                    </Link>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
-                                {mySubmissions.filter(s => s.status === 'pending' || s.status === 'submitted' || !s.status).length === 0 && (
-                                    <div className="text-center py-4">
-                                        <p className="text-xs text-white/50">All assessments completed</p>
+                                    
+                                    <div className="flex items-center gap-3 text-xs text-white/40 mb-4 bg-[#0a0c27] p-2 rounded border border-white/5">
+                                        <span className="flex items-center gap-1.5" title="Duration">
+                                            <Clock className="w-3.5 h-3.5 text-blue-400" />
+                                            {job.config?.duration_minutes || 60}m
+                                        </span>
+                                        <div className="w-px h-3 bg-white/10" />
+                                        <span className="flex items-center gap-1.5" title="Posted">
+                                            <Briefcase className="w-3.5 h-3.5 text-purple-400" />
+                                            {job.posted}
+                                        </span>
                                     </div>
-                                )}
-                            </div>
-                        )}
+
+                                    <div className="mt-auto pt-4">
+                                        <Link href={`/test/${job.id}`}>
+                                            <Button className="w-full bg-white/5 hover:bg-primary hover:text-primary-foreground text-white border border-white/10 hover:border-transparent transition-all">
+                                                Take Assessment
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
-                </div>
+                )}
             </div>
         </div>
     )

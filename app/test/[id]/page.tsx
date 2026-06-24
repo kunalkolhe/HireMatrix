@@ -21,11 +21,9 @@ interface Job {
         domain_knowledge: string[]
     }
     experience_level?: string
-    config?: {
-        duration_minutes: number
-        passing_percentage: number
-    }
+    config?: Record<string, any>
     questions?: any[]
+    status?: string
 }
 
 export default function AssessmentLinkPage() {
@@ -65,6 +63,19 @@ export default function AssessmentLinkPage() {
         checkResume()
     }, [user])
 
+    // Check if already submitted
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const isSubmittedLocally = localStorage.getItem(`hirematrix_submitted_${assessmentId}`) === 'true'
+            const hasSubmissionSession = !!sessionStorage.getItem(`submission_${assessmentId}`)
+            
+            if (isSubmittedLocally || hasSubmissionSession) {
+                toast.info("You have already submitted this assessment.")
+                router.replace(`/test/${assessmentId}/submitted`)
+            }
+        }
+    }, [assessmentId, router])
+
     useEffect(() => {
         const loadJob = async () => {
             try {
@@ -94,7 +105,7 @@ export default function AssessmentLinkPage() {
                     }
                     setJob(formattedJob)
                 } else {
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const foundJob = savedJobs.find((j: Job) => j.id === assessmentId)
                     if (foundJob) {
                         setJob(foundJob)
@@ -102,7 +113,7 @@ export default function AssessmentLinkPage() {
                 }
             } catch (error) {
                 console.error('Error loading job:', error)
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const foundJob = savedJobs.find((j: Job) => j.id === assessmentId)
                 if (foundJob) {
                     setJob(foundJob)
@@ -133,17 +144,17 @@ export default function AssessmentLinkPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E8C547] border-t-transparent" />
+            <div className="min-h-screen bg-[#0D1225] flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent" />
             </div>
         )
     }
 
     if (!job) {
         return (
-            <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-white/5 border border-white/10 rounded-lg p-8">
-                    <h2 className="text-xl font-bold text-red-400 mb-2">Assessment Not Found</h2>
+            <div className="min-h-screen bg-[#0D1225] flex items-center justify-center p-4">
+                <div className="max-w-md w-full bg-[#13163a] border border-white/10 rounded-lg p-8">
+                    <h2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">Assessment Not Found</h2>
                     <p className="text-white/60">The assessment link you're looking for doesn't exist or has expired.</p>
                 </div>
             </div>
@@ -163,47 +174,47 @@ export default function AssessmentLinkPage() {
     const codingCount = job.questions?.filter(q => q.type === 'coding').length || 0
 
     return (
-        <div className="min-h-screen bg-[#0A0A0A]">
+        <div className="min-h-screen bg-[#0D1225]">
             <div className="container mx-auto px-4 py-12 max-w-4xl">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-4">
-                        <Brain className="w-5 h-5 text-[#E8C547]" />
-                        <span className="font-semibold text-white">AssessAI Assessment</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#13163a] rounded-full border border-white/10 mb-4">
+                        <Brain className="w-5 h-5 text-primary" />
+                        <span className="font-semibold text-white">HireMatrix Assessment</span>
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-3">{job.title}</h1>
+                    <h1 className="text-4xl font-bold font-mono text-white mb-3">{job.title}</h1>
                     <p className="text-xl text-white/60">{job.company}</p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6 mb-8">
                     {/* Assessment Overview */}
-                    <div className="md:col-span-2 bg-white/5 border border-white/10 rounded-lg p-6">
+                    <div className="md:col-span-2 bg-[#13163a] border border-white/10 rounded-lg p-6">
                         <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
-                            <FileText className="w-5 h-5 text-[#E8C547]" />
+                            <FileText className="w-5 h-5 text-primary" />
                             Assessment Overview
                         </h3>
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3 text-white/70">
+                            <div className="flex items-center gap-3 text-white/60">
                                 <Clock className="w-5 h-5 text-white/40" />
                                 <div>
                                     <div className="font-semibold text-white">Duration</div>
-                                    <div className="text-sm text-white/50">{duration} minutes</div>
+                                    <div className="text-sm text-white/40">{duration} minutes</div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3 text-white/70">
+                            <div className="flex items-center gap-3 text-white/60">
                                 <FileText className="w-5 h-5 text-white/40" />
                                 <div>
                                     <div className="font-semibold text-white">Total Questions</div>
-                                    <div className="text-sm text-white/50">{questionCount} questions</div>
+                                    <div className="text-sm text-white/40">{questionCount} questions</div>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-white/10">
-                                <div className="text-sm font-semibold text-white/70 mb-2">Question Breakdown:</div>
+                            <div className="pt-4 border-t border-white/8">
+                                <div className="text-sm font-semibold text-white/60 mb-2">Question Breakdown:</div>
                                 <div className="flex flex-wrap gap-2">
                                     {mcqCount > 0 && (
-                                        <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
+                                        <Badge variant="secondary" className="bg-primary/10 text-blue-400 border-blue-500/20">
                                             {mcqCount} MCQs
                                         </Badge>
                                     )}
@@ -213,7 +224,7 @@ export default function AssessmentLinkPage() {
                                         </Badge>
                                     )}
                                     {codingCount > 0 && (
-                                        <Badge variant="secondary" className="bg-green-500/10 text-green-400 border-green-500/20">
+                                        <Badge variant="secondary" className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                                             {codingCount} Coding
                                         </Badge>
                                     )}
@@ -223,9 +234,9 @@ export default function AssessmentLinkPage() {
                     </div>
 
                     {/* Skills Being Evaluated */}
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-6">
+                    <div className="bg-[#13163a] border border-white/10 rounded-lg p-6">
                         <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
-                            <Code className="w-5 h-5 text-[#E8C547]" />
+                            <Code className="w-5 h-5 text-primary" />
                             Skills Evaluated
                         </h3>
                         {allSkills.length > 0 ? (
@@ -242,51 +253,51 @@ export default function AssessmentLinkPage() {
                                 )}
                             </div>
                         ) : (
-                            <p className="text-sm text-white/50">Skills will be evaluated based on your responses.</p>
+                            <p className="text-sm text-white/40">Skills will be evaluated based on your responses.</p>
                         )}
                     </div>
                 </div>
 
                 {/* Instructions */}
-                <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
+                <div className="bg-[#13163a] border border-white/10 rounded-lg p-6 mb-8">
                     <h3 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
-                        <CheckCircle2 className="w-5 h-5 text-[#E8C547]" />
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
                         Instructions
                     </h3>
-                    <ul className="space-y-3 text-white/70">
+                    <ul className="space-y-3 text-white/60">
                         <li className="flex items-start gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                             <div>
                                 <div className="font-semibold text-white">No Signup Required</div>
-                                <div className="text-sm text-white/50">Just provide your name, email, and resume to get started.</div>
+                                <div className="text-sm text-white/40">Just provide your name, email, and resume to get started.</div>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                             <div>
                                 <div className="font-semibold text-white">Sequential Sections</div>
-                                <div className="text-sm text-white/50">Complete MCQs first, then subjective questions, and finally coding challenges.</div>
+                                <div className="text-sm text-white/40">Complete MCQs first, then subjective questions, and finally coding challenges.</div>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                             <div>
                                 <div className="font-semibold text-white">Auto-Save</div>
-                                <div className="text-sm text-white/50">Your answers are automatically saved as you progress.</div>
+                                <div className="text-sm text-white/40">Your answers are automatically saved as you progress.</div>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                            <CheckCircle2 className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                             <div>
                                 <div className="font-semibold text-white">Time Limit</div>
-                                <div className="text-sm text-white/50">You have {duration} minutes to complete the assessment. Timer starts when you begin.</div>
+                                <div className="text-sm text-white/40">You have {duration} minutes to complete the assessment. Timer starts when you begin.</div>
                             </div>
                         </li>
                         <li className="flex items-start gap-3">
                             <Shield className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                             <div>
                                 <div className="font-semibold text-white">Fair Assessment</div>
-                                <div className="text-sm text-white/50">The system monitors assessment integrity to ensure fairness for all candidates.</div>
+                                <div className="text-sm text-white/40">The system monitors assessment integrity to ensure fairness for all candidates.</div>
                             </div>
                         </li>
                     </ul>
@@ -301,7 +312,7 @@ export default function AssessmentLinkPage() {
                     <p className="text-amber-200/70 text-sm mb-4">
                         Please read these rules carefully. Violations will result in automatic submission.
                     </p>
-                    <ul className="space-y-3 text-white/80">
+                    <ul className="space-y-3 text-white/60">
                         <li className="flex items-start gap-3">
                             <AlertCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
                             <div>
@@ -379,7 +390,7 @@ export default function AssessmentLinkPage() {
                     <Button
                         onClick={handleStart}
                         size="lg"
-                        className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black px-8 py-6 text-lg"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg"
                     >
                         Start Assessment
                         <ArrowRight className="ml-2 w-5 h-5" />

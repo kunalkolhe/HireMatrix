@@ -147,8 +147,8 @@ export default function EditProfilePage() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="flex items-center space-x-2 text-[#E8C547]">
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center space-x-2 text-primary">
           <Loader2 className="h-6 w-6 animate-spin" />
           <span>Loading profile...</span>
         </div>
@@ -161,35 +161,35 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <Button
             variant="ghost"
             onClick={() => router.back()}
-            className="mb-4 text-white/70 hover:text-white hover:bg-white/10"
+            className="mb-4 text-muted-foreground hover:text-foreground hover:bg-secondary"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
 
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-[#E8C547]/10 rounded-lg flex items-center justify-center border border-[#E8C547]/20">
-              <User className="w-6 h-6 text-[#E8C547]" />
+            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
+              <User className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Edit Profile</h1>
-              <p className="text-white/60">Update your personal information and preferences</p>
+              <h1 className="text-3xl font-bold font-mono text-foreground">Edit Profile</h1>
+              <p className="text-muted-foreground">Update your personal information and preferences</p>
             </div>
           </div>
         </div>
 
         {/* Profile Form */}
-        <Card className="bg-white/5 border-white/10 shadow-xl">
+        <Card className="bg-secondary border-border shadow-xl">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-white">Personal Information</CardTitle>
-            <CardDescription className="text-white/50">
+            <CardTitle className="text-xl font-semibold text-foreground">Personal Information</CardTitle>
+            <CardDescription className="text-muted-foreground/70">
               Update your profile details below
             </CardDescription>
           </CardHeader>
@@ -197,30 +197,30 @@ export default function EditProfilePage() {
           <CardContent>
             {error && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-red-400 text-sm">{error}</p>
+                <p className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">{error}</p>
               </div>
             )}
 
             {success && (
               <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <p className="text-green-400 text-sm">{success}</p>
+                <p className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{success}</p>
               </div>
             )}
 
             <form onSubmit={handleSave} className="space-y-6">
               {/* Full Name */}
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-sm font-medium text-white/70">
+                <Label htmlFor="fullName" className="text-sm font-medium text-muted-foreground">
                   Full Name
                 </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/70" />
                   <Input
                     id="fullName"
                     type="text"
                     value={formData.fullName}
                     onChange={(e) => handleInputChange("fullName", e.target.value)}
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#E8C547] focus:ring-[#E8C547]/20"
+                    className="pl-10 bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-primary/20"
                     placeholder="Enter your full name"
                     required
                   />
@@ -229,36 +229,36 @@ export default function EditProfilePage() {
 
               {/* Email */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-white/70">
+                <Label htmlFor="email" className="text-sm font-medium text-muted-foreground">
                   Email Address
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/70" />
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
-                    className="pl-10 bg-white/5 border-white/10 text-white/50 cursor-not-allowed"
+                    className="pl-10 bg-secondary border-border text-muted-foreground/70 cursor-not-allowed"
                     disabled
                   />
                 </div>
-                <p className="text-xs text-white/40">Email cannot be changed</p>
+                <p className="text-xs text-muted-foreground/70">Email cannot be changed</p>
               </div>
 
               {/* Role and Location Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Role */}
                 <div className="space-y-2">
-                  <Label htmlFor="role" className="text-sm font-medium text-white/70">
+                  <Label htmlFor="role" className="text-sm font-medium text-muted-foreground">
                     Target Role
                   </Label>
                   <div className="relative">
-                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-white/40 z-10" />
+                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/70 z-10" />
                     <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
-                      <SelectTrigger className="pl-10 bg-white/5 border-white/10 text-white focus:border-[#E8C547] focus:ring-[#E8C547]/20">
+                      <SelectTrigger className="pl-10 bg-secondary border-border text-foreground focus:border-primary focus:ring-primary/20">
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
-                      <SelectContent className="bg-[#1a1a1a] border-white/10 text-white">
+                      <SelectContent className="bg-[#1a1a1a] border-border text-foreground">
                         <SelectItem value="web-developer">Web Developer</SelectItem>
                         <SelectItem value="data-analyst">Data Analyst</SelectItem>
                         <SelectItem value="software-engineer">Software Engineer</SelectItem>
@@ -274,17 +274,17 @@ export default function EditProfilePage() {
 
                 {/* Location */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-sm font-medium text-white/70">
+                  <Label htmlFor="location" className="text-sm font-medium text-muted-foreground">
                     Location
                   </Label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/40" />
+                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/70" />
                     <Input
                       id="location"
                       type="text"
                       value={formData.location}
                       onChange={(e) => handleInputChange("location", e.target.value)}
-                      className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#E8C547] focus:ring-[#E8C547]/20"
+                      className="pl-10 bg-secondary border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:ring-primary/20"
                       placeholder="Enter your city"
                       required
                     />
@@ -292,7 +292,7 @@ export default function EditProfilePage() {
                 </div>
               </div>
 
-              <Separator className="my-6 bg-white/10" />
+              <Separator className="my-6 bg-secondary" />
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-end">
@@ -300,14 +300,14 @@ export default function EditProfilePage() {
                   type="button"
                   variant="outline"
                   onClick={() => router.back()}
-                  className="bg-transparent border-white/10 text-white hover:bg-white/10"
+                  className="bg-transparent border-border text-foreground hover:bg-secondary"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isSaving ? (
                     <>

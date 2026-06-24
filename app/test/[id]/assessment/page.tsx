@@ -85,6 +85,7 @@ export default function SequentialAssessmentPage() {
     const [showTabSwitchWarning, setShowTabSwitchWarning] = useState(false)
     const [showFullscreenWarning, setShowFullscreenWarning] = useState(false)
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const [hasStarted, setHasStarted] = useState(false)
     const fullscreenExitCountRef = useRef(0)
 
     // Anti-cheat tracking (silent)
@@ -703,10 +704,43 @@ export default function SequentialAssessmentPage() {
     if (!job) {
         return (
             <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6 text-center">
                     <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
                     <h2 className="text-xl font-semibold text-white mb-2">Assessment Not Found</h2>
                     <p className="text-white/60">This assessment is not available.</p>
+                </div>
+            </div>
+        )
+    }
+
+    if (!hasStarted && !submitted) {
+        return (
+            <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-8 max-w-md w-full text-center space-y-6">
+                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <AlertCircle className="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold text-white mb-2">Ready to Begin?</h2>
+                        <p className="text-white/60 text-sm">
+                            This assessment requires fullscreen mode to ensure a fair environment. 
+                            Please do not exit fullscreen or switch tabs once started.
+                        </p>
+                    </div>
+                    <Button 
+                        onClick={() => {
+                            const element = document.documentElement
+                            if (element.requestFullscreen) {
+                                element.requestFullscreen().catch(() => {})
+                            } else if ((element as any).webkitRequestFullscreen) {
+                                (element as any).webkitRequestFullscreen()
+                            }
+                            setHasStarted(true)
+                        }}
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 text-lg shadow-lg shadow-primary/20"
+                    >
+                        Enter Fullscreen & Start
+                    </Button>
                 </div>
             </div>
         )

@@ -1,7 +1,7 @@
 /**
  * Job Service - Supabase Implementation
  * Manages jobs, assessments, and questions in Supabase
- * Replaces localStorage 'assessai_jobs' usage
+ * Replaces localStorage 'hirematrix_jobs' usage
  */
 
 import { supabase } from './supabase'
@@ -136,9 +136,9 @@ export async function createJobWithAssessment(data: {
             .insert({
                 job_id: job.id,
                 title: data.title,
-                duration_minutes: data.config.duration_minutes || 60,
+                duration_minutes: (data.config as any).duration_minutes || 60,
                 total_marks: 100, // Calculate from questions
-                passing_percentage: data.config.passing_percentage || 50,
+                passing_percentage: (data.config as any).passing_percentage || 50,
                 config: data.config,
                 is_active: data.status === 'active'
             })
@@ -461,7 +461,7 @@ export async function updateJob(
 export function getJobsFromLocalStorage(): any[] {
     if (typeof window === 'undefined') return []
     try {
-        return JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+        return JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
     } catch {
         return []
     }

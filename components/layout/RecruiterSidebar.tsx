@@ -35,7 +35,7 @@ export function RecruiterSidebar() {
     const { signOut } = useAuth()
 
     return (
-        <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r-2 border-black z-50 flex flex-col">
+        <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#080C18] border-r-2 border-black z-50 flex flex-col">
             {/* Header */}
             <div className="p-6 border-b-2 border-black">
                 <Link href="/" className="flex items-center gap-3 group">
@@ -50,7 +50,7 @@ export function RecruiterSidebar() {
 
             {/* Navigation */}
             <div className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <div className="text-xs font-black text-gray-400 uppercase tracking-widest px-2 mb-2">
+                <div className="text-xs font-black text-white/60 uppercase tracking-widest px-2 mb-2">
                     Workspace
                 </div>
                 {sidebarItems.map((item) => {
@@ -63,7 +63,7 @@ export function RecruiterSidebar() {
                                 "flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-all font-bold mb-2",
                                 isActive
                                     ? "bg-primary border-black text-white shadow-hard"
-                                    : "bg-transparent border-transparent text-gray-500 hover:bg-gray-100 hover:text-black"
+                                    : "bg-transparent border-transparent text-white/60 hover:bg-muted/60 hover:text-primary-foreground"
                             )}>
                                 <Icon className={cn("w-5 h-5", isActive ? "text-white" : "fill-none")} />
                                 <span>{item.title}</span>
@@ -72,7 +72,7 @@ export function RecruiterSidebar() {
                     )
                 })}
 
-                <div className="mt-8 text-xs font-black text-gray-400 uppercase tracking-widest px-2 mb-2">
+                <div className="mt-8 text-xs font-black text-white/60 uppercase tracking-widest px-2 mb-2">
                     Settings
                 </div>
                 <Link href="/recruiter/settings">
@@ -80,7 +80,7 @@ export function RecruiterSidebar() {
                         "flex items-center gap-3 px-4 py-3 rounded-lg border-2 transition-all font-bold mb-2",
                         pathname === "/recruiter/settings"
                             ? "bg-primary border-black text-white shadow-hard"
-                            : "bg-transparent border-transparent text-gray-500 hover:bg-gray-100 hover:text-black"
+                            : "bg-transparent border-transparent text-white/60 hover:bg-muted/60 hover:text-primary-foreground"
                     )}>
                         <Settings className="w-5 h-5" />
                         <span>Settings</span>
@@ -89,7 +89,7 @@ export function RecruiterSidebar() {
             </div>
 
             {/* Footer / User Profile */}
-            <div className="p-4 border-t-2 border-black bg-gray-50">
+            <div className="p-4 border-t-2 border-black bg-white/5">
                 <div className="flex items-center justify-between mb-3">
                     <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-black text-sm border-2 border-black">
                         SZ
@@ -98,14 +98,14 @@ export function RecruiterSidebar() {
                         variant="ghost"
                         size="icon"
                         onClick={() => signOut()}
-                        className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full"
+                        className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20"
                     >
                         <LogOut className="w-4 h-4" />
                     </Button>
                 </div>
                 <div>
                     <p className="text-sm font-black uppercase">Recruiter</p>
-                    <p className="text-xs text-gray-500 truncate">Manage pipeline</p>
+                    <p className="text-xs text-white/60 truncate">Manage pipeline</p>
                 </div>
             </div>
         </aside>

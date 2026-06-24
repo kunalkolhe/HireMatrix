@@ -28,7 +28,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext"
 import { toast } from "sonner"
 import { createJobWithAssessment } from "@/lib/jobService"
-import type { ParsedSkills } from "@/lib/types"
+import type { ParsedSkills, AssessmentConfig } from "@/lib/types"
 
 interface JDParseResult {
     title: string
@@ -45,16 +45,7 @@ interface JDParseResult {
     }
 }
 
-interface AssessmentConfig {
-    mcq_count: number
-    mcq_weightage: number
-    subjective_count: number
-    subjective_weightage: number
-    coding_count: number
-    coding_weightage: number
-    duration_minutes: number
-    passing_percentage: number
-}
+
 
 export default function NewJobPage() {
     const router = useRouter()
@@ -77,7 +68,10 @@ export default function NewJobPage() {
         coding_count: 2,
         coding_weightage: 40,
         duration_minutes: 60,
-        passing_percentage: 50
+        passing_percentage: 50,
+        shuffle_questions: true,
+        show_results_immediately: false,
+        allow_retake: false
     })
 
     const handleAnalyzeJD = async () => {
@@ -206,7 +200,7 @@ export default function NewJobPage() {
                 toast.success('Assessment created successfully!')
                 // Also save to localStorage as backup (for gradual migration)
                 try {
-                    const existingJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const existingJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     existingJobs.push({
                         id: result.job.id,
                         title: result.job.title,
@@ -221,7 +215,7 @@ export default function NewJobPage() {
                         candidatesCount: 0,
                         questionsCount: generatedQuestions.questions.length
                     })
-                    localStorage.setItem('assessai_jobs', JSON.stringify(existingJobs))
+                    localStorage.setItem('hirematrix_jobs', JSON.stringify(existingJobs))
                 } catch (e) {
                     console.warn('Failed to save to localStorage backup:', e)
                 }
@@ -247,7 +241,7 @@ export default function NewJobPage() {
             {/* Header */}
             <div className="flex items-center justify-center relative mb-8">
                 <Link href="/recruiter/dashboard" className="absolute left-0">
-                    <Button variant="ghost" className="text-white/50 hover:text-white">
+                    <Button variant="ghost" className="text-white/40 hover:text-white">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to Dashboard
                     </Button>
@@ -265,15 +259,15 @@ export default function NewJobPage() {
                         return (
                             <div key={s.id} className="flex items-center">
                                 <div className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${isActive
-                                    ? 'bg-white text-black shadow-lg scale-105'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
                                     : isCompleted
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-white/10 text-white/50'
+                                        ? 'bg-[#13163a] text-white border border-white/10'
+                                        : 'bg-[#13163a]/50 text-white/40 border border-white/5'
                                     }`}>
                                     <s.icon className="w-4 h-4" />
                                     <span className="text-sm font-medium hidden sm:inline">{s.label}</span>
                                 </div>
-                                {i < 3 && <div className="w-8 h-0.5 bg-white/10 mx-2" />}
+                                {i < 3 && <div className="w-8 h-0.5 bg-[#13163a] mx-2" />}
                             </div>
                         )
                     })}
@@ -283,44 +277,44 @@ export default function NewJobPage() {
             <div className="max-w-4xl mx-auto">
                 {/* Step 1: JD Input */}
                 {step === 'input' && (
-                    <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                    <Card className="bg-[#13163a] border-white/10 backdrop-blur-xl">
                         <CardHeader>
                             <CardTitle className="text-white flex items-center gap-2">
                                 <Briefcase className="w-6 h-6 text-primary" />
                                 Create New Assessment
                             </CardTitle>
-                            <CardDescription className="text-white/50">
+                            <CardDescription className="text-white/40">
                                 Paste the job description. Our AI will analyze it to suggest the perfect assessment structure.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="company" className="text-white/70">Company Name</Label>
+                                <Label htmlFor="company" className="text-white/60">Company Name</Label>
                                 <Input
                                     id="company"
                                     placeholder="e.g., Acme Corp"
                                     value={company}
                                     onChange={(e) => setCompany(e.target.value)}
-                                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                                    className="bg-[#13163a] border-white/10 text-white placeholder:text-white/40"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="jd" className="text-white/70">Job Description</Label>
+                                <Label htmlFor="jd" className="text-white/60">Job Description</Label>
                                 <Textarea
                                     id="jd"
                                     placeholder="Paste the full JD here..."
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
-                                    className="min-h-[300px] bg-white/5 border-white/10 text-white placeholder:text-white/30 resize-none p-4"
+                                    className="min-h-[300px] bg-[#13163a] border-white/10 text-white placeholder:text-white/40 resize-none p-4"
                                 />
                                 <p className="text-xs text-white/40 text-right">{jobDescription.length} chars</p>
                             </div>
 
                             {error && (
                                 <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
-                                    <AlertCircle className="w-5 h-5 text-red-500" />
-                                    <p className="text-sm text-red-500 font-medium">{error}</p>
+                                    <AlertCircle className="w-5 h-5 text-red-400" />
+                                    <p className="text-sm font-medium text-red-400">{error}</p>
                                 </div>
                             )}
 
@@ -347,7 +341,7 @@ export default function NewJobPage() {
 
                 {/* Step 2: Parsed Result */}
                 {step === 'parsed' && parsedJD && (
-                    <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                    <Card className="bg-[#13163a] border-white/10 backdrop-blur-xl">
                         <CardHeader>
                             <div className="flex items-center justify-between">
                                 <div>
@@ -355,7 +349,7 @@ export default function NewJobPage() {
                                         <Sparkles className="w-6 h-6 text-secondary" />
                                         AI Analysis Complete
                                     </CardTitle>
-                                    <CardDescription className="text-white/50">
+                                    <CardDescription className="text-white/40">
                                         We extracted the following requirements from your JD.
                                     </CardDescription>
                                 </div>
@@ -371,11 +365,11 @@ export default function NewJobPage() {
                         </CardHeader>
                         <CardContent className="space-y-8">
                             <div className="grid md:grid-cols-2 gap-4">
-                                <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                <div className="bg-[#13163a] rounded-2xl p-4 border border-white/10">
                                     <p className="text-xs text-white/40 uppercase tracking-wide mb-1">Position</p>
                                     <p className="text-lg font-bold text-white">{parsedJD.title}</p>
                                 </div>
-                                <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                                <div className="bg-[#13163a] rounded-2xl p-4 border border-white/10">
                                     <p className="text-xs text-white/40 uppercase tracking-wide mb-1">Experience Level</p>
                                     <Badge variant="outline" className="text-blue-400 border-blue-400/20 bg-blue-400/10 capitalize text-sm">
                                         {parsedJD.experience_level}
@@ -390,7 +384,7 @@ export default function NewJobPage() {
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
                                     {parsedJD.skills.technical.map((skill, i) => (
-                                        <Badge key={i} className="bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20">
+                                        <Badge key={i} className="bg-primary/10 text-blue-400 border border-blue-500/20 hover:bg-primary/20">
                                             {skill}
                                         </Badge>
                                     ))}
@@ -420,19 +414,19 @@ export default function NewJobPage() {
 
                 {/* Step 3: Config */}
                 {step === 'config' && parsedJD && (
-                    <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                    <Card className="bg-[#13163a] border-white/10 backdrop-blur-xl">
                         <CardHeader>
                             <CardTitle className="text-white flex items-center gap-2">
                                 <Settings className="w-6 h-6 text-white" />
                                 Configure Assessment
                             </CardTitle>
-                            <CardDescription className="text-white/50">
+                            <CardDescription className="text-white/40">
                                 Customize the difficulty and composition of the test.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-8">
                             <div className="grid md:grid-cols-3 gap-4">
-                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-primary/50 transition-colors">
+                                <div className="bg-[#13163a] p-4 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors">
                                     <div className="flex items-center gap-2 mb-2 text-blue-400">
                                         <FileText className="w-4 h-4" />
                                         <span className="font-semibold text-sm">MCQs</span>
@@ -444,7 +438,7 @@ export default function NewJobPage() {
                                         className="bg-transparent border-white/10 text-white text-center font-bold text-xl h-12"
                                     />
                                 </div>
-                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-primary/50 transition-colors">
+                                <div className="bg-[#13163a] p-4 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors">
                                     <div className="flex items-center gap-2 mb-2 text-amber-400">
                                         <MessageSquare className="w-4 h-4" />
                                         <span className="font-semibold text-sm">Subjective</span>
@@ -456,7 +450,7 @@ export default function NewJobPage() {
                                         className="bg-transparent border-white/10 text-white text-center font-bold text-xl h-12"
                                     />
                                 </div>
-                                <div className="bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-primary/50 transition-colors">
+                                <div className="bg-[#13163a] p-4 rounded-2xl border border-white/10 hover:border-primary/50 transition-colors">
                                     <div className="flex items-center gap-2 mb-2 text-emerald-400">
                                         <Code className="w-4 h-4" />
                                         <span className="font-semibold text-sm">Coding</span>
@@ -476,7 +470,7 @@ export default function NewJobPage() {
                                     <span className="text-primary font-bold">{config.duration_minutes} min</span>
                                 </div>
                                 <Slider
-                                    value={[config.duration_minutes]}
+                                    value={[config.duration_minutes ?? 60]}
                                     onValueChange={([value]) => setConfig({ ...config, duration_minutes: value })}
                                     min={15}
                                     max={120}
@@ -510,41 +504,41 @@ export default function NewJobPage() {
                     <div className="flex flex-col items-center justify-center py-20 text-center">
                         <div className="relative">
                             <div className="w-24 h-24 bg-primary/20 rounded-full blur-xl absolute inset-0 animate-pulse-glow" />
-                            <div className="w-24 h-24 bg-background border border-white/10 rounded-3xl flex items-center justify-center relative z-10 shadow-2xl">
+                            <div className="w-24 h-24 bg-[#0D1225] border border-white/10 rounded-3xl flex items-center justify-center relative z-10 shadow-2xl">
                                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
                             </div>
                         </div>
                         <h2 className="text-2xl font-bold text-white mt-8 mb-2">Generating Assessment...</h2>
-                        <p className="text-white/50">Crafting questions tailored to the job profile.</p>
+                        <p className="text-white/40">Crafting questions tailored to the job profile.</p>
                     </div>
                 )}
 
                 {/* Step 4: Ready */}
                 {step === 'ready' && generatedQuestions && (
-                    <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+                    <Card className="bg-[#13163a] border-white/10 backdrop-blur-xl">
                         <CardContent className="pt-8 space-y-8">
                             <div className="text-center">
                                 <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
-                                    <CheckCircle className="w-10 h-10 text-emerald-500" />
+                                    <CheckCircle className="w-10 h-10 text-emerald-400" />
                                 </div>
-                                <h2 className="text-3xl font-bold text-white mb-2">Ready to Launch!</h2>
-                                <p className="text-white/50">Your assessment has been generated and is ready to be published.</p>
+                                <h2 className="text-3xl font-bold font-mono text-white mb-2">Ready to Launch!</h2>
+                                <p className="text-white/40">Your assessment has been generated and is ready to be published.</p>
                             </div>
 
                             <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                <div className="bg-[#13163a] p-4 rounded-2xl text-center border border-white/10">
                                     <p className="text-2xl font-bold text-white">{generatedQuestions.summary.mcq_count}</p>
                                     <p className="text-xs text-white/40">MCQs</p>
                                 </div>
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                <div className="bg-[#13163a] p-4 rounded-2xl text-center border border-white/10">
                                     <p className="text-2xl font-bold text-white">{generatedQuestions.summary.subjective_count}</p>
                                     <p className="text-xs text-white/40">Written</p>
                                 </div>
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                <div className="bg-[#13163a] p-4 rounded-2xl text-center border border-white/10">
                                     <p className="text-2xl font-bold text-white">{generatedQuestions.summary.coding_count}</p>
                                     <p className="text-xs text-white/40">Coding</p>
                                 </div>
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                <div className="bg-[#13163a] p-4 rounded-2xl text-center border border-white/10">
                                     <p className="text-2xl font-bold text-blue-400">{generatedQuestions.summary.total_marks}</p>
                                     <p className="text-xs text-white/40">Marks</p>
                                 </div>

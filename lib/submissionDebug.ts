@@ -61,8 +61,8 @@ export function debugSubmissions() {
     console.log('sessionStorage answers:', answers)
     
     // Check jobs
-    const jobs = localStorage.getItem('assessai_jobs')
-    console.log('localStorage (assessai_jobs):', jobs ? JSON.parse(jobs) : 'Empty')
+    const jobs = localStorage.getItem('hirematrix_jobs')
+    console.log('localStorage (hirematrix_jobs):', jobs ? JSON.parse(jobs) : 'Empty')
     
     console.log('=== END DEBUG ===')
 }

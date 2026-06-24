@@ -260,13 +260,13 @@ export function generatePDFReportHTML(
             
             let answerText = ''
             if (q.type === 'mcq') {
-                const selected = answer.response?.selected_option
+                const selected = (answer.response as any)?.selected_option
                 const options = q.content?.options || []
                 answerText = options[selected] || 'Not answered'
             } else if (q.type === 'subjective') {
-                answerText = answer.response?.text || 'No answer'
+                answerText = (answer.response as any)?.text || 'No answer'
             } else if (q.type === 'coding') {
-                answerText = answer.response?.code || 'No code submitted'
+                answerText = (answer.response as any)?.code || 'No code submitted'
             }
             
             return `

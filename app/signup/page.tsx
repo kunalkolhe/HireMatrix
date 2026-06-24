@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/contexts/AuthContext"
-import { Zap, User, Briefcase, ArrowRight, Check } from "lucide-react"
+import { Zap, User, Briefcase, ArrowRight, Check, Eye, EyeOff } from "lucide-react"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -20,6 +20,7 @@ export default function SignupPage() {
     accountType: "candidate" // 'candidate' | 'recruiter'
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -52,11 +53,11 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex w-full bg-[#0A0A0A]">
+    <div className="min-h-screen flex w-full bg-background">
       {/* ========== LEFT: BRANDING ========== */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden border-r border-white/5">
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden bg-gradient-to-br from-[#080C18] via-[#0D1225] to-[#13163a]">
         {/* Ambient glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#E8C547]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -95,8 +96,8 @@ export default function SignupPage() {
                 transition={{ delay: 0.4 + i * 0.1 }}
                 className="flex items-center gap-3 text-white/60"
               >
-                <div className="w-5 h-5 rounded-full bg-[#E8C547]/20 flex items-center justify-center">
-                  <Check className="w-3 h-3 text-[#E8C547]" />
+                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Check className="w-3 h-3 text-primary" />
                 </div>
                 <span>{item}</span>
               </motion.li>
@@ -130,13 +131,13 @@ export default function SignupPage() {
               <div className="w-12 h-12 rounded-xl overflow-hidden">
                 <img src="/logo.png" alt="HireMatrix" className="w-full h-full object-cover" />
               </div>
-              <span className="text-xl font-semibold text-white">HireMatrix</span>
+              <span className="text-xl font-semibold text-foreground">HireMatrix</span>
             </Link>
           </div>
 
           <div className="text-center">
-            <h1 className="text-3xl font-light text-white tracking-tight">Create an account</h1>
-            <p className="text-white/40 mt-2">Start your free trial today</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Create an account</h1>
+            <p className="text-muted-foreground/70 mt-2">Start your free trial today</p>
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">
@@ -147,19 +148,19 @@ export default function SignupPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleInputChange("accountType", "candidate")}
-                className={`p-4 rounded-xl border text-left transition-all ${formData.accountType === 'candidate'
-                  ? 'border-[#E8C547] bg-[#E8C547]/10'
-                  : 'border-white/10 bg-white/5 hover:border-white/20'
+                className={`p-4 card-professional text-left cursor-pointer transition-all ${formData.accountType === 'candidate'
+                  ? 'border-primary bg-primary/10'
+                  : 'hover:border-primary/40 shadow-none'
                   }`}
               >
                 <div className={`p-2 w-fit rounded-lg mb-3 ${formData.accountType === 'candidate'
-                  ? 'bg-[#E8C547] text-black'
-                  : 'bg-white/10 text-white/60'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
                   }`}>
                   <User className="w-5 h-5" />
                 </div>
-                <div className="font-medium text-sm text-white">Candidate</div>
-                <div className="text-xs text-white/40 mt-1">I'm looking for a job</div>
+                <div className="font-semibold text-sm text-foreground">Candidate</div>
+                <div className="text-xs text-muted-foreground mt-1">I'm looking for a job</div>
               </motion.button>
 
               <motion.button
@@ -167,28 +168,28 @@ export default function SignupPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleInputChange("accountType", "recruiter")}
-                className={`p-4 rounded-xl border text-left transition-all ${formData.accountType === 'recruiter'
-                  ? 'border-[#E8C547] bg-[#E8C547]/10'
-                  : 'border-white/10 bg-white/5 hover:border-white/20'
+                className={`p-4 card-professional text-left cursor-pointer transition-all ${formData.accountType === 'recruiter'
+                  ? 'border-primary bg-primary/10'
+                  : 'hover:border-primary/40 shadow-none'
                   }`}
               >
                 <div className={`p-2 w-fit rounded-lg mb-3 ${formData.accountType === 'recruiter'
-                  ? 'bg-[#E8C547] text-black'
-                  : 'bg-white/10 text-white/60'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
                   }`}>
                   <Briefcase className="w-5 h-5" />
                 </div>
-                <div className="font-medium text-sm text-white">Recruiter</div>
-                <div className="text-xs text-white/40 mt-1">I want to hire talent</div>
+                <div className="font-semibold text-sm text-foreground">Recruiter</div>
+                <div className="text-xs text-muted-foreground mt-1">I want to hire talent</div>
               </motion.button>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-white/60">Full Name</Label>
+                <Label htmlFor="fullName" className="text-muted-foreground">Full Name</Label>
                 <Input
                   id="fullName"
-                  className="h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#E8C547] focus:ring-[#E8C547]/20"
+                  className="input-clean h-12"
                   placeholder="John Doe"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange("fullName", e.target.value)}
@@ -197,11 +198,11 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white/60">Work Email</Label>
+                <Label htmlFor="email" className="text-muted-foreground">Work Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  className="h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#E8C547] focus:ring-[#E8C547]/20"
+                  className="input-clean h-12"
                   placeholder="name@company.com"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
@@ -209,33 +210,42 @@ export default function SignupPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-white/60">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  className="h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#E8C547] focus:ring-[#E8C547]/20"
-                  placeholder="Min. 8 characters"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  required
-                />
+              <div className="space-y-2 relative">
+                <Label htmlFor="password" className="text-muted-foreground">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    className="input-clean h-12 pr-10"
+                    placeholder="Min. 8 characters"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-[#E8C547] text-black font-semibold hover:bg-[#f0d060] rounded-xl transition-all"
+              className="btn-primary w-full h-12 rounded-xl text-base font-semibold animate-pulse-glow"
             >
               {isLoading ? "Creating account..." : "Create Account"}
               {!isLoading && <ArrowRight className="ml-2 w-4 h-4" />}
             </Button>
           </form>
 
-          <p className="text-center text-sm text-white/40">
+          <p className="text-center text-sm text-muted-foreground/70">
             Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-[#E8C547] hover:text-[#f0d060]">
+            <Link href="/login" className="font-semibold text-primary hover:underline">
               Log in
             </Link>
           </p>

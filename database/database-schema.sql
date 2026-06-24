@@ -265,6 +265,12 @@ CREATE POLICY "Recruiters view submissions for their jobs" ON submissions
         EXISTS (SELECT 1 FROM jobs WHERE jobs.id = submissions.job_id AND jobs.recruiter_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Recruiters can update submissions for their jobs" ON submissions;
+CREATE POLICY "Recruiters can update submissions for their jobs" ON submissions
+    FOR UPDATE USING (
+        EXISTS (SELECT 1 FROM jobs WHERE jobs.id = submissions.job_id AND jobs.recruiter_id = auth.uid())
+    );
+
 DROP POLICY IF EXISTS "Candidates can insert own submissions" ON submissions;
 CREATE POLICY "Candidates can insert own submissions" ON submissions
     FOR INSERT WITH CHECK (candidate_id = auth.uid());

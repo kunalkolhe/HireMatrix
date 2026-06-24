@@ -54,6 +54,10 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        mono: ["var(--font-mono)"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -72,16 +76,20 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
-        "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 15px rgba(99, 102, 241, 0.2)" },
-          "50%": { boxShadow: "0 0 25px rgba(99, 102, 241, 0.6)" },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 15px rgba(91, 78, 232, 0.2)" },
+          "50%": { boxShadow: "0 0 25px rgba(168, 85, 247, 0.5)" },
+        },
+        shimmer: {
+          "100%": { transform: "translateX(100%)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "float": "float 6s ease-in-out infinite",
-        "pulse-glow": "pulse-glow 3s infinite",
+        "glow-pulse": "glow-pulse 2.5s infinite",
+        "shimmer": "shimmer 2s infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

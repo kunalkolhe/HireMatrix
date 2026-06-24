@@ -233,7 +233,7 @@ export default function CandidatesPage() {
     const getStatusBadge = (status: string) => {
         const styles = {
             pending: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-            evaluated: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+            evaluated: 'bg-primary/10 text-blue-400 border-blue-500/20',
             shortlisted: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
             rejected: 'bg-red-500/10 text-red-400 border-red-500/20'
         }
@@ -267,7 +267,7 @@ export default function CandidatesPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleBulkStatusChange('shortlisted')}
-                            className="border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10"
+                            className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                         >
                             <CheckCircle className="w-4 h-4 mr-2" />
                             Shortlist ({selectedCandidates.size})
@@ -276,7 +276,7 @@ export default function CandidatesPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleBulkStatusChange('rejected')}
-                            className="border-red-500/20 text-red-400 hover:bg-red-500/10"
+                            className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20"
                         >
                             <XCircle className="w-4 h-4 mr-2" />
                             Reject ({selectedCandidates.size})
@@ -295,43 +295,43 @@ export default function CandidatesPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Total Candidates</p>
                     <div className="text-3xl font-semibold text-white">{stats.total}</div>
-                    <p className="text-xs text-white/30 mt-1">Across all assessments</p>
+                    <p className="text-xs text-white/40 mt-1">Across all assessments</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Pending Review</p>
                     <div className="text-3xl font-semibold text-amber-400">{stats.pending}</div>
-                    <p className="text-xs text-white/30 mt-1">Awaiting evaluation</p>
+                    <p className="text-xs text-white/40 mt-1">Awaiting evaluation</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Shortlisted</p>
-                    <div className="text-3xl font-semibold text-emerald-400">{stats.shortlisted}</div>
-                    <p className="text-xs text-white/30 mt-1">Selected candidates</p>
+                    <div className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{stats.shortlisted}</div>
+                    <p className="text-xs text-white/40 mt-1">Selected candidates</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Average Score</p>
                     <div className="text-3xl font-semibold text-blue-400">
                         {stats.averageScore > 0 ? Math.round(stats.averageScore) : 0}%
                     </div>
-                    <p className="text-xs text-white/30 mt-1">Across all submissions</p>
+                    <p className="text-xs text-white/40 mt-1">Across all submissions</p>
                 </div>
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+            <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/30 w-4 h-4" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40 w-4 h-4" />
                         <Input
                             placeholder="Search by name, email, or assessment..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                            className="pl-10 bg-[#13163a] border-white/10 text-white placeholder:text-white/40"
                         />
                     </div>
 
@@ -342,9 +342,9 @@ export default function CandidatesPage() {
                                 variant={statusFilter === status ? 'default' : 'outline'}
                                 size="sm"
                                 onClick={() => setStatusFilter(status)}
-                                className={`capitalize ${statusFilter === status
-                                    ? 'bg-white text-black'
-                                    : 'border-white/10 text-white/60 hover:bg-white/10 hover:text-white'}`}
+                                className={`capitalize rounded-full px-4 transition-all ${statusFilter === status
+                                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 font-medium border-transparent'
+                                    : 'bg-transparent border-white/10 text-white/60 hover:bg-white/5 hover:text-white hover:border-white/20'}`}
                             >
                                 {status}
                             </Button>
@@ -355,12 +355,12 @@ export default function CandidatesPage() {
                         <select
                             value={assessmentFilter}
                             onChange={(e) => setAssessmentFilter(e.target.value)}
-                            className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-white/20"
+                            className="px-3 py-2 bg-[#13163a] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-white/10"
                             style={{ colorScheme: 'dark' }}
                         >
-                            <option value="all" className="bg-[#1a1a1a] text-white">All Assessments</option>
+                            <option value="all" className="bg-[#0D1225] text-white">All Assessments</option>
                             {assessments.map(assessment => (
-                                <option key={assessment.id} value={assessment.id} className="bg-[#1a1a1a] text-white">
+                                <option key={assessment.id} value={assessment.id} className="bg-[#0D1225] text-white">
                                     {assessment.title} - {assessment.company}
                                 </option>
                             ))}
@@ -370,8 +370,8 @@ export default function CandidatesPage() {
             </div>
 
             {/* Candidates Table */}
-            <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                <div className="p-6 border-b border-white/10 flex items-center justify-between">
+            <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden">
+                <div className="p-6 border-b border-white/8 flex items-center justify-between">
                     <div>
                         <h2 className="text-lg font-semibold text-white">Candidates ({filteredAndSorted.length})</h2>
                         <p className="text-sm text-white/40">Click on a candidate to view detailed report</p>
@@ -390,7 +390,7 @@ export default function CandidatesPage() {
                                     toast.info('No new submissions to migrate')
                                 }
                             }}
-                            className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
+                            className="border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white"
                         >
                             <Download className="w-4 h-4 mr-2" />
                             Sync
@@ -400,7 +400,7 @@ export default function CandidatesPage() {
                             size="sm"
                             onClick={exportToCSV}
                             disabled={filteredAndSorted.length === 0}
-                            className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
+                            className="border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white"
                         >
                             <Download className="w-4 h-4 mr-2" />
                             Export CSV
@@ -410,7 +410,7 @@ export default function CandidatesPage() {
 
                 {filteredAndSorted.length === 0 ? (
                     <div className="py-16 text-center">
-                        <Users className="w-16 h-16 text-white/20 mx-auto mb-4" />
+                        <Users className="w-16 h-16 text-white/40 mx-auto mb-4" />
                         <h3 className="text-lg font-medium text-white mb-2">No candidates found</h3>
                         <p className="text-white/40">
                             {searchQuery || statusFilter !== 'all' || assessmentFilter !== 'all'
@@ -419,10 +419,10 @@ export default function CandidatesPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden overflow-x-auto">
                         <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-white/10 bg-white/5">
+                            <thead className="bg-white/5 text-white/60 text-xs font-semibold uppercase tracking-wide">
+                                <tr className="border-b border-white/8 bg-[#13163a]">
                                     <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">
                                         <input
                                             type="checkbox"
@@ -434,7 +434,7 @@ export default function CandidatesPage() {
                                                     setSelectedCandidates(new Set())
                                                 }
                                             }}
-                                            className="rounded border-white/20 bg-white/5"
+                                            className="rounded border-white/10 bg-[#13163a]"
                                         />
                                     </th>
                                     <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase tracking-wider">
@@ -469,7 +469,7 @@ export default function CandidatesPage() {
                                 {filteredAndSorted.map((submission) => {
                                     const hasFlags = submission.antiCheatData.tab_switches > 0 || submission.antiCheatData.copy_paste_detected
                                     return (
-                                        <tr key={submission.id} className="hover:bg-white/5 transition-colors">
+                                        <tr key={submission.id} className="hover:bg-[#13163a] transition-colors">
                                             <td className="px-4 py-4">
                                                 <input
                                                     type="checkbox"
@@ -483,13 +483,13 @@ export default function CandidatesPage() {
                                                         }
                                                         setSelectedCandidates(newSet)
                                                     }}
-                                                    className="rounded border-white/20 bg-white/5"
+                                                    className="rounded border-white/10 bg-[#13163a]"
                                                 />
                                             </td>
                                             <td className="px-4 py-4">
                                                 <Link href={`/recruiter/candidates/${encodeURIComponent(submission.id)}`}>
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-medium">
+                                                        <div className="w-10 h-10 rounded-full bg-[#13163a] flex items-center justify-center text-white font-medium">
                                                             {submission.candidateInfo.name.charAt(0).toUpperCase()}
                                                         </div>
                                                         <div>
@@ -519,7 +519,7 @@ export default function CandidatesPage() {
                                                         <div className="text-xs text-white/40">{submission.scores.totalScore}/{submission.scores.totalPossible} pts</div>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-white/30 text-sm">Not evaluated</span>
+                                                    <span className="text-white/40 text-sm">Not evaluated</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-4">
@@ -534,7 +534,7 @@ export default function CandidatesPage() {
                                                                 size="sm"
                                                                 variant="ghost"
                                                                 onClick={() => handleStatusChange(submission.id, 'shortlisted')}
-                                                                className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                                                                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                                                             >
                                                                 <CheckCircle className="w-4 h-4" />
                                                             </Button>
@@ -542,14 +542,14 @@ export default function CandidatesPage() {
                                                                 size="sm"
                                                                 variant="ghost"
                                                                 onClick={() => handleStatusChange(submission.id, 'rejected')}
-                                                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                                                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20"
                                                             >
                                                                 <XCircle className="w-4 h-4" />
                                                             </Button>
                                                         </>
                                                     ) : null}
                                                     <Link href={`/recruiter/candidates/${encodeURIComponent(submission.id)}`}>
-                                                        <Button size="sm" variant="outline" className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white">
+                                                        <Button size="sm" variant="outline" className="border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white">
                                                             <Eye className="w-4 h-4 mr-1" />
                                                             View
                                                         </Button>

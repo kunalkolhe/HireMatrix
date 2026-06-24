@@ -123,7 +123,7 @@ function detectGuessPatterns(
     for (const question of questions) {
         if (question.type === 'mcq') {
             const answer = submission.answers[question.id]
-            const selected = answer?.response?.selected_option
+            const selected = (answer?.response as any)?.selected_option
             if (typeof selected === 'number') {
                 mcqAnswers.push(selected)
             }
@@ -191,13 +191,13 @@ function detectIdenticalResponses(
     for (const question of questions) {
         if (question.type === 'mcq') {
             const answer = submission.answers[question.id]
-            const selected = answer?.response?.selected_option
+            const selected = (answer?.response as any)?.selected_option
             
             // Count how many other submissions have same answer
             const sameAnswerCount = allSubmissions.filter(s => {
                 if (s.id === submission.id || s.assessmentId !== submission.assessmentId) return false
                 const otherAnswer = s.answers[question.id]
-                return otherAnswer?.response?.selected_option === selected
+                return (otherAnswer?.response as any)?.selected_option === selected
             }).length
             
             if (sameAnswerCount >= 5) {

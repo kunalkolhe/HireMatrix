@@ -14,7 +14,7 @@ interface Submission {
     jobId: string
     jobTitle: string
     company: string
-    status: 'pending' | 'submitted' | 'evaluated' | 'shortlisted' | 'rejected'
+    status: 'pending' | 'submitted' | 'evaluated' | 'shortlisted' | 'rejected' | 'in_progress'
     scores?: {
         percentage?: number
         mcq?: number
@@ -73,13 +73,13 @@ export default function AchievementsPage() {
             case 'shortlisted':
                 return { color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: Trophy, label: 'Shortlisted' }
             case 'evaluated':
-                return { color: 'bg-blue-500/10 text-blue-400 border-blue-500/20', icon: CheckCircle, label: 'Evaluated' }
+                return { color: 'bg-primary/10 text-blue-400 border-blue-500/20', icon: CheckCircle, label: 'Evaluated' }
             case 'rejected':
                 return { color: 'bg-red-500/10 text-red-400 border-red-500/20', icon: XCircle, label: 'Rejected' }
             case 'submitted':
                 return { color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock, label: 'Submitted' }
             default:
-                return { color: 'bg-gray-500/10 text-gray-400 border-gray-500/20', icon: Clock, label: 'Pending' }
+                return { color: 'bg-white/50/10 text-white/60 border-gray-500/20', icon: Clock, label: 'Pending' }
         }
     }
 
@@ -100,7 +100,7 @@ export default function AchievementsPage() {
     if (loading) {
         return (
             <div className="max-w-4xl mx-auto flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#E8C547] border-t-transparent" />
+                <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
             </div>
         )
     }
@@ -108,28 +108,28 @@ export default function AchievementsPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             {/* ========== PAGE HEADER ========== */}
-            <div className="flex justify-between items-end border-b border-white/10 pb-6">
+            <div className="flex justify-between items-end border-b border-white/8 pb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                        <Award className="w-7 h-7 text-[#E8C547]" /> My Achievements
+                        <Award className="w-7 h-7 text-primary" /> My Achievements
                     </h1>
-                    <p className="text-white/50 mt-1">Track your assessment progress and download reports</p>
+                    <p className="text-white/40 mt-1">Track your assessment progress and download reports</p>
                 </div>
             </div>
 
             {/* ========== STATS CARDS ========== */}
             <div className="grid grid-cols-3 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                    <p className="text-3xl font-bold text-white">{completedCount}</p>
-                    <p className="text-sm text-white/50">Completed</p>
+                <div className="bg-[#13163a] border border-white/10 rounded-lg p-6">
+                    <p className="text-3xl font-bold font-mono text-white">{completedCount}</p>
+                    <p className="text-sm text-white/40">Completed</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                    <p className="text-3xl font-bold text-white">{pendingCount}</p>
-                    <p className="text-sm text-white/50">In Progress</p>
+                <div className="bg-[#13163a] border border-white/10 rounded-lg p-6">
+                    <p className="text-3xl font-bold font-mono text-white">{pendingCount}</p>
+                    <p className="text-sm text-white/40">In Progress</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-                    <p className="text-3xl font-bold text-[#E8C547]">{Math.round(avgScore || 0)}%</p>
-                    <p className="text-sm text-white/50">Avg Score</p>
+                <div className="bg-[#13163a] border border-white/10 rounded-lg p-6">
+                    <p className="text-3xl font-bold font-mono text-primary">{Math.round(avgScore || 0)}%</p>
+                    <p className="text-sm text-white/40">Avg Score</p>
                 </div>
             </div>
 
@@ -140,8 +140,8 @@ export default function AchievementsPage() {
                     size="sm"
                     onClick={() => setFilter('all')}
                     className={filter === 'all'
-                        ? 'bg-[#E8C547] hover:bg-[#E8C547]/90 text-black'
-                        : 'border-white/10 text-white hover:bg-white/10'}
+                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                        : 'border-white/10 text-white hover:bg-[#13163a]'}
                 >
                     All ({submissions.length})
                 </Button>
@@ -150,8 +150,8 @@ export default function AchievementsPage() {
                     size="sm"
                     onClick={() => setFilter('evaluated')}
                     className={filter === 'evaluated'
-                        ? 'bg-[#E8C547] hover:bg-[#E8C547]/90 text-black'
-                        : 'border-white/10 text-white hover:bg-white/10'}
+                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                        : 'border-white/10 text-white hover:bg-[#13163a]'}
                 >
                     Evaluated ({completedCount})
                 </Button>
@@ -160,8 +160,8 @@ export default function AchievementsPage() {
                     size="sm"
                     onClick={() => setFilter('pending')}
                     className={filter === 'pending'
-                        ? 'bg-[#E8C547] hover:bg-[#E8C547]/90 text-black'
-                        : 'border-white/10 text-white hover:bg-white/10'}
+                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                        : 'border-white/10 text-white hover:bg-[#13163a]'}
                 >
                     Pending ({pendingCount})
                 </Button>
@@ -169,16 +169,16 @@ export default function AchievementsPage() {
 
             {/* ========== SUBMISSIONS LIST ========== */}
             {filteredSubmissions.length === 0 ? (
-                <div className="bg-white/5 border border-white/10 rounded-lg p-12 text-center">
-                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Briefcase className="w-8 h-8 text-white/30" />
+                <div className="bg-[#13163a] border border-white/10 rounded-lg p-12 text-center">
+                    <div className="w-16 h-16 bg-[#13163a] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Briefcase className="w-8 h-8 text-white/40" />
                     </div>
                     <h3 className="text-lg font-medium text-white mb-2">
                         {submissions.length === 0
                             ? 'No assessments yet'
                             : 'No matching assessments'}
                     </h3>
-                    <p className="text-white/50">
+                    <p className="text-white/40">
                         {submissions.length === 0
                             ? 'Start taking assessments to track your progress here.'
                             : 'Try changing your filter selection.'}
@@ -191,10 +191,10 @@ export default function AchievementsPage() {
                         const StatusIcon = statusConfig.icon
 
                         return (
-                            <div key={submission.id} className="bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/[0.08] transition-colors">
+                            <div key={submission.id} className="bg-[#13163a] border border-white/10 rounded-lg p-6 hover:bg-white/[0.08] transition-colors">
                                 <div className="flex justify-between items-start">
                                     <div className="flex gap-4 flex-1">
-                                        <div className="w-12 h-12 rounded bg-gradient-to-br from-[#E8C547] to-amber-600 flex items-center justify-center text-black font-bold text-xl uppercase">
+                                        <div className="w-12 h-12 rounded bg-gradient-to-br from-[#E8C547] to-amber-600 flex items-center justify-center text-primary-foreground font-bold text-xl uppercase">
                                             {submission.company?.charAt(0) || 'A'}
                                         </div>
                                         <div className="flex-1">
@@ -217,13 +217,13 @@ export default function AchievementsPage() {
                                                         Score: {Math.round(submission.scores.percentage)}%
                                                     </span>
                                                     {submission.scores.mcq !== undefined && (
-                                                        <span className="text-white/50">MCQ: {submission.scores.mcq}%</span>
+                                                        <span className="text-white/40">MCQ: {submission.scores.mcq}%</span>
                                                     )}
                                                     {submission.scores.subjective !== undefined && (
-                                                        <span className="text-white/50">Subjective: {submission.scores.subjective}%</span>
+                                                        <span className="text-white/40">Subjective: {submission.scores.subjective}%</span>
                                                     )}
                                                     {submission.scores.coding !== undefined && (
-                                                        <span className="text-white/50">Coding: {submission.scores.coding}%</span>
+                                                        <span className="text-white/40">Coding: {submission.scores.coding}%</span>
                                                     )}
                                                 </div>
                                             )}
@@ -248,7 +248,7 @@ export default function AchievementsPage() {
                                                 size="sm"
                                                 onClick={() => handleDownloadReport(submission)}
                                                 disabled={downloadingId === submission.id}
-                                                className="border-white/10 text-white hover:bg-white/10"
+                                                className="border-white/10 text-white hover:bg-[#13163a]"
                                             >
                                                 {downloadingId === submission.id ? (
                                                     <>

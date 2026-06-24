@@ -1,4 +1,4 @@
-# AssessAI - AI-Powered Intelligent Assessment & Hiring Platform
+# HireMatrix - AI-Powered Intelligent Assessment & Hiring Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -7,13 +7,13 @@
 
 > **Eliminate fake applications and hire the right talent with AI-driven assessments**
 
-AssessAI is an intelligent assessment platform that automatically generates role-specific questions, evaluates candidates using AI, and provides comprehensive analytics to help recruiters make data-driven hiring decisions.
+HireMatrix is an intelligent assessment platform that automatically generates role-specific questions, evaluates candidates using AI, and provides comprehensive analytics to help recruiters make data-driven hiring decisions.
 
 ---
 
 ## 🎯 Overview
 
-AssessAI revolutionizes the hiring process by:
+HireMatrix revolutionizes the hiring process by:
 
 - **Parsing job descriptions** to extract skills, experience levels, and requirements
 - **Generating custom assessments** with MCQs, subjective questions, and coding challenges
@@ -245,7 +245,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 1. Job Description Intelligence
 
-Upload a job description, and AssessAI will:
+Upload a job description, and HireMatrix will:
 - Extract technical skills, soft skills, tools, and domain knowledge
 - Determine experience level (fresher/junior/mid/senior)
 - Map requirements to assessment criteria

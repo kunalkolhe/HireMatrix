@@ -206,23 +206,23 @@ export default function CodeEditor({
       case 'memory limit exceeded':
         return 'bg-orange-100 text-orange-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-muted/60 text-foreground'
     }
   }
 
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Editor Controls */}
-      <Card className="bg-white border-gray-200 shadow-lg">
+      <Card className="bg-background border-border shadow-lg">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center text-gray-800">
-              <Play className="w-5 h-5 mr-2 text-red-600" />
+            <CardTitle className="flex items-center text-foreground">
+              <Play className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
               Code Editor
             </CardTitle>
             <div className="flex items-center space-x-3">
               <Select value={selectedLanguage} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-40 border-gray-200 focus:border-red-500 focus:ring-red-500">
+                <SelectTrigger className="w-40 border-border focus:border-red-500 focus:ring-red-500">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -237,7 +237,7 @@ export default function CodeEditor({
               <Button
                 onClick={runCode}
                 disabled={isRunning || !code.trim()}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-green-600 hover:bg-green-700 text-foreground"
               >
                 {isRunning ? (
                   <>
@@ -255,7 +255,7 @@ export default function CodeEditor({
               <Button
                 onClick={resetEditor}
                 variant="outline"
-                className="border-gray-200 hover:border-red-500 hover:bg-red-50"
+                className="border-border hover:border-red-500 hover:bg-red-50"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Reset
@@ -265,7 +265,7 @@ export default function CodeEditor({
         </CardHeader>
         
         <CardContent>
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <Editor
               height="400px"
               language={selectedLanguage}
@@ -291,14 +291,14 @@ export default function CodeEditor({
 
       {/* Compilation Result */}
       {result && (
-        <Card className="bg-white border-gray-200 shadow-lg">
+        <Card className="bg-background border-border shadow-lg">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center text-gray-800">
+              <CardTitle className="flex items-center text-foreground">
                 {result.success ? (
-                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+                  <CheckCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                 ) : (
-                  <XCircle className="w-5 h-5 mr-2 text-red-600" />
+                  <XCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
                 )}
                 Compilation Result
               </CardTitle>
@@ -306,7 +306,7 @@ export default function CodeEditor({
                 <Badge className={getStatusColor(result.status)}>
                   {result.status}
                 </Badge>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-muted-foreground">
                   <Clock className="w-4 h-4 mr-1" />
                   {result.time}s
                 </div>
@@ -318,8 +318,8 @@ export default function CodeEditor({
             {/* Output */}
             {result.output && (
               <div>
-                <h4 className="font-medium text-gray-700 mb-2">Output:</h4>
-                <pre className="bg-gray-900 text-green-400 p-3 rounded-lg overflow-x-auto text-sm">
+                <h4 className="font-medium text-foreground mb-2">Output:</h4>
+                <pre className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                   {result.output}
                 </pre>
               </div>
@@ -328,11 +328,11 @@ export default function CodeEditor({
             {/* Error */}
             {result.error && (
               <div>
-                <h4 className="font-medium text-gray-700 mb-2 flex items-center">
-                  <AlertCircle className="w-4 h-4 mr-2 text-red-600" />
+                <h4 className="font-medium text-foreground mb-2 flex items-center">
+                  <AlertCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
                   Error:
                 </h4>
-                <pre className="bg-red-50 text-red-800 p-3 rounded-lg overflow-x-auto text-sm border border-red-200">
+                <pre className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">
                   {result.error}
                 </pre>
               </div>
@@ -341,35 +341,35 @@ export default function CodeEditor({
             {/* Test Results */}
             {testResults.length > 0 && (
               <div>
-                <h4 className="font-medium text-gray-700 mb-3">Test Results:</h4>
+                <h4 className="font-medium text-foreground mb-3">Test Results:</h4>
                 <div className="space-y-2">
                   {testResults.map((test, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div className="flex-1">
                         <div className="text-sm">
-                          <span className="font-medium text-gray-700">Input: </span>
-                          <code className="text-xs bg-white px-2 py-1 rounded border">
+                          <span className="font-medium text-foreground">Input: </span>
+                          <code className="text-xs bg-background px-2 py-1 rounded border">
                             {test.input}
                           </code>
                         </div>
                         <div className="text-sm mt-1">
-                          <span className="font-medium text-gray-700">Expected: </span>
-                          <code className="text-xs bg-white px-2 py-1 rounded border">
+                          <span className="font-medium text-foreground">Expected: </span>
+                          <code className="text-xs bg-background px-2 py-1 rounded border">
                             {test.expected}
                           </code>
                         </div>
                         <div className="text-sm mt-1">
-                          <span className="font-medium text-gray-700">Actual: </span>
-                          <code className="text-xs bg-white px-2 py-1 rounded border">
+                          <span className="font-medium text-foreground">Actual: </span>
+                          <code className="text-xs bg-background px-2 py-1 rounded border">
                             {test.actual}
                           </code>
                         </div>
                       </div>
                       <div className="ml-4">
                         {test.passed ? (
-                          <CheckCircle className="w-6 h-6 text-green-600" />
+                          <CheckCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                         ) : (
-                          <XCircle className="w-6 h-6 text-red-600" />
+                          <XCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
                         )}
                       </div>
                     </div>

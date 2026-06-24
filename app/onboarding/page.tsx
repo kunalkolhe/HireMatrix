@@ -44,7 +44,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Ambient Background */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#E8C547]/5 to-transparent pointer-events-none" />
 
@@ -52,11 +52,11 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-3">
-            <div className="w-10 h-10 bg-[#E8C547]/10 rounded-xl flex items-center justify-center border border-[#E8C547]/20">
-              <Brain className="w-6 h-6 text-[#E8C547]" />
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+              <Brain className="w-6 h-6 text-primary" />
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">
-              AssessAI
+            <span className="text-2xl font-bold text-foreground tracking-tight">
+              HireMatrix
             </span>
           </div>
         </div>
@@ -64,33 +64,33 @@ export default function OnboardingPage() {
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-sm font-medium text-white/60">
+            <span className="text-sm font-medium text-muted-foreground">
               Step {currentStep} of {steps.length}
             </span>
-            <span className="text-sm font-medium text-[#E8C547]">{Math.round((currentStep / steps.length) * 100)}% Complete</span>
+            <span className="text-sm font-medium text-primary">{Math.round((currentStep / steps.length) * 100)}% Complete</span>
           </div>
-          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 bg-secondary rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#E8C547] transition-all duration-500 ease-out"
+              className="h-full bg-primary transition-all duration-500 ease-out"
               style={{ width: `${(currentStep / steps.length) * 100}%` }}
             />
           </div>
         </div>
 
-        <Card className="bg-white/5 border-white/10 backdrop-blur-md shadow-2xl">
-          <CardHeader className="text-center border-b border-white/5 pb-8">
-            <CardTitle className="text-3xl font-bold text-white mb-2">{steps[currentStep - 1].title}</CardTitle>
-            <CardDescription className="text-white/50 text-lg">{steps[currentStep - 1].description}</CardDescription>
+        <Card className="bg-secondary border-border backdrop-blur-md shadow-2xl">
+          <CardHeader className="text-center border-b border-border pb-8">
+            <CardTitle className="text-3xl font-bold font-mono text-foreground mb-2">{steps[currentStep - 1].title}</CardTitle>
+            <CardDescription className="text-muted-foreground/70 text-lg">{steps[currentStep - 1].description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8 pt-8 px-8">
             {currentStep === 1 && (
               <div className="text-center space-y-8">
-                <div className="w-24 h-24 bg-[#E8C547]/10 rounded-full flex items-center justify-center mx-auto border border-[#E8C547]/20 animate-pulse">
-                  <Target className="w-12 h-12 text-[#E8C547]" />
+                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20 animate-pulse">
+                  <Target className="w-12 h-12 text-primary" />
                 </div>
                 <div className="max-w-md mx-auto">
-                  <h3 className="text-xl font-semibold text-white mb-3">Welcome to AssessAI!</h3>
-                  <p className="text-white/60 leading-relaxed">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">Welcome to HireMatrix!</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     We'll help you create a personalized learning path to achieve your career goals. This quick setup
                     will take just 2-3 minutes.
                   </p>
@@ -101,11 +101,11 @@ export default function OnboardingPage() {
                     { number: 2, text: "Upload Resume" },
                     { number: 3, text: "Start Learning" }
                   ].map((item) => (
-                    <div key={item.number} className="p-4 bg-white/5 rounded-xl border border-white/10">
-                      <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold">
+                    <div key={item.number} className="p-4 bg-secondary rounded-xl border border-border">
+                      <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">
                         {item.number}
                       </div>
-                      <p className="font-medium text-white/80">{item.text}</p>
+                      <p className="font-medium text-muted-foreground">{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -115,8 +115,8 @@ export default function OnboardingPage() {
             {currentStep === 2 && (
               <div className="space-y-8">
                 <div className="text-center max-w-lg mx-auto">
-                  <h3 className="text-xl font-semibold text-white mb-2">Select Your Current Skills</h3>
-                  <p className="text-white/60">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Select Your Current Skills</h3>
+                  <p className="text-muted-foreground">
                     Choose the skills you're comfortable with. This helps us create your personalized learning path.
                   </p>
                 </div>
@@ -126,8 +126,8 @@ export default function OnboardingPage() {
                       key={skill}
                       variant={selectedSkills.includes(skill) ? "default" : "outline"}
                       className={`cursor-pointer p-3 text-center justify-center transition-all duration-200 ${selectedSkills.includes(skill)
-                          ? "bg-[#E8C547] text-black border-[#E8C547] hover:bg-[#E8C547]/90"
-                          : "border-white/10 text-white/70 hover:bg-white/10 hover:text-white"
+                          ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                          : "border-border text-muted-foreground hover:bg-secondary hover:text-foreground"
                         }`}
                       onClick={() => handleSkillToggle(skill)}
                     >
@@ -135,26 +135,26 @@ export default function OnboardingPage() {
                     </Badge>
                   ))}
                 </div>
-                <p className="text-sm text-white/40 text-center">Selected {selectedSkills.length} skills</p>
+                <p className="text-sm text-muted-foreground/70 text-center">Selected {selectedSkills.length} skills</p>
               </div>
             )}
 
             {currentStep === 3 && (
               <div className="space-y-8">
                 <div className="text-center max-w-lg mx-auto">
-                  <h3 className="text-xl font-semibold text-white mb-2">Upload Your Resume</h3>
-                  <p className="text-white/60">
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Upload Your Resume</h3>
+                  <p className="text-muted-foreground">
                     Upload your resume for AI-powered analysis and personalized recommendations.
                   </p>
                 </div>
-                <div className="border-2 border-dashed border-white/20 rounded-xl p-12 text-center hover:border-[#E8C547]/50 hover:bg-white/[0.02] transition-colors cursor-pointer group">
-                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-[#E8C547]/10 transition-colors">
-                    <Upload className="w-8 h-8 text-white/40 group-hover:text-[#E8C547] transition-colors" />
+                <div className="border-2 border-dashed border-border rounded-xl p-12 text-center hover:border-primary/50 hover:bg-white/[0.02] transition-colors cursor-pointer group">
+                  <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/10 transition-colors">
+                    <Upload className="w-8 h-8 text-muted-foreground/70 group-hover:text-primary transition-colors" />
                   </div>
-                  <p className="text-lg font-medium text-white mb-2">Drag and drop your resume here</p>
-                  <p className="text-sm text-white/40 mb-6">or click to browse files</p>
-                  <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">Choose File</Button>
-                  <p className="text-xs text-white/30 mt-4">Supports PDF, DOC, DOCX (Max 5MB)</p>
+                  <p className="text-lg font-medium text-foreground mb-2">Drag and drop your resume here</p>
+                  <p className="text-sm text-muted-foreground/70 mb-6">or click to browse files</p>
+                  <Button variant="outline" className="border-border text-foreground hover:bg-secondary">Choose File</Button>
+                  <p className="text-xs text-muted-foreground/70 mt-4">Supports PDF, DOC, DOCX (Max 5MB)</p>
                 </div>
               </div>
             )}
@@ -162,16 +162,16 @@ export default function OnboardingPage() {
             {currentStep === 4 && (
               <div className="text-center space-y-8">
                 <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border border-green-500/20">
-                  <CheckCircle className="w-12 h-12 text-green-500" />
+                  <CheckCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                 </div>
                 <div className="max-w-md mx-auto">
-                  <h3 className="text-xl font-semibold text-white mb-3">You're All Set! 🎉</h3>
-                  <p className="text-white/60 leading-relaxed">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">You're All Set! 🎉</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     Your personalized learning path has been created based on your profile and goals.
                   </p>
                 </div>
-                <div className="bg-white/5 p-6 rounded-xl border border-white/10">
-                  <h4 className="font-semibold text-white mb-4 text-left">Your Learning Path Includes:</h4>
+                <div className="bg-secondary p-6 rounded-xl border border-border">
+                  <h4 className="font-semibold text-foreground mb-4 text-left">Your Learning Path Includes:</h4>
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
                     {[
                       "Aptitude Practice Tests",
@@ -179,9 +179,9 @@ export default function OnboardingPage() {
                       "Interview Preparation",
                       "Resume Optimization"
                     ].map((item, idx) => (
-                      <div key={idx} className="flex items-center space-x-3 text-white/80">
+                      <div key={idx} className="flex items-center space-x-3 text-muted-foreground">
                         <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                          <CheckCircle className="w-3 h-3 text-green-500" />
+                          <CheckCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                         </div>
                         <span>{item}</span>
                       </div>
@@ -191,13 +191,13 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <div className="flex justify-between pt-4 border-t border-white/10">
-              <Button variant="ghost" onClick={handleSkip} className="text-white/40 hover:text-white hover:bg-white/5">
+            <div className="flex justify-between pt-4 border-t border-border">
+              <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground/70 hover:text-foreground hover:bg-secondary">
                 Skip for now
               </Button>
               <Button
                 onClick={handleNext}
-                className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black px-8 font-medium"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 font-medium"
               >
                 {currentStep === steps.length ? "Go to Dashboard" : "Continue"}
                 {currentStep !== steps.length && <ArrowRight className="w-4 h-4 ml-2" />}

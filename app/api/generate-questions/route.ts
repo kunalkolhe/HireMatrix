@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
         'HTTP-Referer': 'http://localhost:3000',
-        'X-Title': 'AssessAI'
+        'X-Title': 'HireMatrix'
       },
       body: JSON.stringify({
         model: 'openai/gpt-3.5-turbo',
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     const generatedText = data.choices?.[0]?.message?.content || ''
     console.log('OpenRouter response text:', generatedText.substring(0, 1000) + '...')
     console.log('Full response length:', generatedText.length)
-    let generatedQuestions = parseGeneratedQuestions(generatedText, questionCount)
+    let generatedQuestions = parseGeneratedQuestions(generatedText, questionCount, difficulty)
     console.log('Parsed questions:', generatedQuestions.length, 'questions')
 
     // If parsing failed entirely, return fallback questions
@@ -175,7 +175,7 @@ IMPORTANT JSON FORMATTING RULES:
 Make sure the JSON is valid and properly formatted. Return ONLY the JSON array without any markdown formatting.`
 }
 
-function parseGeneratedQuestions(response: string, expectedCount: number) {
+function parseGeneratedQuestions(response: string, expectedCount: number, difficulty: string) {
   try {
     console.log('Parsing response, length:', response.length)
     // Clean the response first

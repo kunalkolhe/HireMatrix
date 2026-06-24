@@ -297,25 +297,39 @@ export async function getSubmissionsByCandidate(candidateId?: string, candidateE
             `)
             .order('submitted_at', { ascending: false })
 
+        let submissionsData: any[] = []
+        
         if (candidateId) {
-            query = query.eq('candidate_id', candidateId)
-        } else if (candidateEmail) {
-            // Note: We can't query auth.users.email from client-side
-            // If only email is provided without candidateId, we can't reliably find the user
-            // Return empty array - caller should provide candidateId when available
-            console.warn('Cannot lookup candidate by email alone. Please provide candidateId.')
-            return []
-        } else {
-            // No candidate ID or email provided
-            return []
+            const { data, error } = await supabase
+                .from('submissions')
+                .select('*, jobs(title,company)')
+                .eq('candidate_id', candidateId)
+                .order('submitted_at', { ascending: false })
+            
+            if (error) console.error('Error fetching by ID:', error)
+            if (data) submissionsData.push(...data)
         }
-
-        const { data: submissions, error } = await query
-
-        if (error) {
-            console.error('Error fetching candidate submissions:', error)
-            return []
+        
+        if (candidateEmail) {
+            const { data, error } = await supabase
+                .from('submissions')
+                .select('*, jobs(title,company)')
+                .eq('resume_data->>candidate_email', candidateEmail)
+                .order('submitted_at', { ascending: false })
+                
+            if (error) console.error('Error fetching by email:', error)
+            if (data) {
+                // Merge unique by ID
+                const existingIds = new Set(submissionsData.map(s => s.id))
+                const newSubs = data.filter(s => !existingIds.has(s.id))
+                submissionsData.push(...newSubs)
+            }
         }
+        
+        // Sort descending by date
+        submissionsData.sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
+
+        const submissions = submissionsData;
 
         // Format submissions with full data
         const formattedSubmissions = await Promise.all(
@@ -329,6 +343,7 @@ export async function getSubmissionsByCandidate(candidateId?: string, candidateE
                 const answersMap: Record<string, Answer> = {}
                 answers?.forEach((a: any) => {
                     answersMap[a.question_id] = {
+                        question_id: a.question_id,
                         question_type: a.question_type,
                         response: a.response,
                         time_spent_seconds: a.time_spent_seconds
@@ -442,6 +457,7 @@ export async function getAllSubmissions(): Promise<CandidateSubmission[]> {
                 const answersMap: Record<string, Answer> = {}
                 answers?.forEach((a: any) => {
                     answersMap[a.question_id] = {
+                        question_id: a.question_id,
                         question_type: a.question_type,
                         response: a.response,
                         time_spent_seconds: a.time_spent_seconds
@@ -567,6 +583,7 @@ export async function getSubmissionsByAssessment(assessmentId: string): Promise<
                 const answersMap: Record<string, Answer> = {}
                 answers?.forEach((a: any) => {
                     answersMap[a.question_id] = {
+                        question_id: a.question_id,
                         question_type: a.question_type,
                         response: a.response,
                         time_spent_seconds: a.time_spent_seconds
@@ -692,6 +709,7 @@ export async function getSubmissionsByJob(jobId: string): Promise<CandidateSubmi
                 const answersMap: Record<string, Answer> = {}
                 answers?.forEach((a: any) => {
                     answersMap[a.question_id] = {
+                        question_id: a.question_id,
                         question_type: a.question_type,
                         response: a.response,
                         time_spent_seconds: a.time_spent_seconds
@@ -830,6 +848,7 @@ export async function getSubmissionById(submissionId: string): Promise<Candidate
         const answersMap: Record<string, Answer> = {}
         answers?.forEach((a: any) => {
             answersMap[a.question_id] = {
+                question_id: a.question_id,
                 question_type: a.question_type,
                 response: a.response,
                 time_spent_seconds: a.time_spent_seconds
@@ -916,13 +935,19 @@ export async function updateSubmissionStatus(
     status: SubmissionStatus
 ): Promise<boolean> {
     try {
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('submissions')
             .update({ status })
             .eq('id', submissionId)
+            .select('id')
 
         if (error) {
             console.error('Error updating submission status:', error)
+            return false
+        }
+
+        // If no rows were updated, the submission doesn't exist in Supabase (might be local fallback)
+        if (!data || data.length === 0) {
             return false
         }
 

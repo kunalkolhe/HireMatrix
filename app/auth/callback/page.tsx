@@ -29,7 +29,7 @@ export default function AuthCallbackPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <p className="text-white">Signing you in...</p>
+      <p className="text-foreground">Signing you in...</p>
     </div>
   )
 }

@@ -25,7 +25,7 @@ export async function migrateJobsToSupabase(recruiterId: string): Promise<{
     let failed = 0
 
     try {
-        const jobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+        const jobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
 
         for (const job of jobs) {
             try {
@@ -126,7 +126,7 @@ export async function migrateSubmissionsToSupabase(): Promise<{
                 }
 
                 // Get job data
-                const jobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const jobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const job = jobs.find((j: any) => j.id === submission.jobId || j.id === submission.assessmentId)
 
                 if (!job) {
@@ -220,7 +220,7 @@ export async function checkMigrationStatus(): Promise<{
         }
     }
 
-    const localStorageJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]').length
+    const localStorageJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]').length
     const localStorageSubmissions = JSON.parse(localStorage.getItem('recruiter_submissions') || '[]').length
 
     const { count: supabaseJobs } = await supabase

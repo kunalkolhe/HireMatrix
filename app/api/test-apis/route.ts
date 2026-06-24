@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
     console.log('Testing API connectivity...')
     
     const results = {
-      apyhub: { status: 'unknown', error: null },
-      apilayer: { status: 'unknown', error: null }
+      apyhub: { status: 'unknown', error: null as string | null },
+      apilayer: { status: 'unknown', error: null as string | null }
     }
     
     // Test APYHub

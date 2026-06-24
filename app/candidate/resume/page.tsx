@@ -270,10 +270,10 @@ export default function ResumeUploadPage() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <div className="flex justify-between items-end border-b border-white/10 pb-6">
+            <div className="flex justify-between items-end border-b border-white/8 pb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Upload Resume</h1>
-                    <p className="text-white/50 mt-1">
+                    <h1 className="text-white font-extrabold tracking-tight text-2xl">Upload Resume</h1>
+                    <p className="text-white/40 mt-1">
                         {hasResume
                             ? 'Update your resume to keep your profile current'
                             : 'Upload your resume to get started with assessments'}
@@ -282,15 +282,15 @@ export default function ResumeUploadPage() {
             </div>
 
             {/* Upload Section */}
-            <Card className="bg-white/5 border-white/10">
+            <Card className="bg-[#13163a] border-white/10">
                 <CardHeader>
                     <CardTitle className="text-white">Resume File</CardTitle>
-                    <CardDescription className="text-white/50">
+                    <CardDescription className="text-white/40">
                         Upload your resume in PDF, DOC, DOCX, TXT, or RTF format (max 5MB)
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-[#E8C547]/50 transition-colors">
+                    <div className="p-8 border-2 border-dashed border-white/15 rounded-xl bg-white/3 hover:border-primary/50 hover:bg-primary/5 transition-all text-center cursor-pointer">
                         <input
                             type="file"
                             id="resume-upload"
@@ -302,7 +302,7 @@ export default function ResumeUploadPage() {
                         <label htmlFor="resume-upload" className="cursor-pointer">
                             {resumeFile ? (
                                 <div className="space-y-2">
-                                    <FileText className="w-12 h-12 text-[#E8C547] mx-auto" />
+                                    <FileText className="w-12 h-12 text-primary mx-auto" />
                                     <div className="font-medium text-white">{resumeFile.name}</div>
                                     <Button
                                         type="button"
@@ -314,7 +314,7 @@ export default function ResumeUploadPage() {
                                             setParsedData(null)
                                             setConfirmedSkills([])
                                         }}
-                                        className="text-white/60 hover:text-white hover:bg-white/10"
+                                        className="text-white/60 hover:text-white hover:bg-[#13163a]"
                                     >
                                         <X className="w-4 h-4 mr-2" />
                                         Remove
@@ -324,7 +324,7 @@ export default function ResumeUploadPage() {
                                 <div className="space-y-2">
                                     <Upload className="w-12 h-12 text-white/40 mx-auto" />
                                     <div className="text-sm text-white/60">
-                                        <span className="text-[#E8C547] font-medium">Click to upload</span> or drag and drop
+                                        <span className="text-primary font-semibold hover:underline">Click to upload</span> or drag and drop
                                     </div>
                                     <div className="text-xs text-white/40">PDF, DOC, DOCX, TXT, or RTF (max 5MB)</div>
                                 </div>
@@ -336,7 +336,7 @@ export default function ResumeUploadPage() {
                         <Button
                             onClick={handleParseResume}
                             disabled={parsing}
-                            className="w-full bg-[#E8C547] hover:bg-[#E8C547]/90 text-black"
+                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                             {parsing ? (
                                 <>
@@ -356,10 +356,10 @@ export default function ResumeUploadPage() {
 
             {/* Skills Confirmation Section */}
             {parsedData && (
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-[#13163a] border-white/10">
                     <CardHeader>
                         <CardTitle className="text-white">Confirm Your Skills</CardTitle>
-                        <CardDescription className="text-white/50">
+                        <CardDescription className="text-white/40">
                             Review and confirm the skills extracted from your resume. You can add or remove skills.
                         </CardDescription>
                     </CardHeader>
@@ -371,9 +371,9 @@ export default function ResumeUploadPage() {
                                 onChange={(e) => setNewSkill(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && addSkill()}
                                 placeholder="Add a skill"
-                                className="flex-1 bg-white/5 border-white/10 text-white placeholder:text-white/40"
+                                className="flex-1 bg-[#13163a] border-white/10 text-white placeholder:text-white/40"
                             />
-                            <Button onClick={addSkill} size="sm" className="bg-[#E8C547] hover:bg-[#E8C547]/90 text-black">
+                            <Button onClick={addSkill} size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                                 <Plus className="w-4 h-4" />
                             </Button>
                         </div>
@@ -385,49 +385,49 @@ export default function ResumeUploadPage() {
                                     <Badge
                                         key={idx}
                                         variant="secondary"
-                                        className="px-3 py-1 text-sm flex items-center gap-2 bg-[#E8C547]/10 text-[#E8C547] border-[#E8C547]/20"
+                                        className="px-3 py-1 text-sm flex items-center gap-2 bg-primary/10 text-primary border-primary/20"
                                     >
                                         {skill}
                                         <button
                                             onClick={() => removeSkill(skill)}
-                                            className="hover:text-red-400"
+                                            className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20"
                                         >
                                             <X className="w-3 h-3" />
                                         </button>
                                     </Badge>
                                 ))
                             ) : (
-                                <p className="text-sm text-white/50">No skills confirmed yet</p>
+                                <p className="text-sm text-white/40">No skills confirmed yet</p>
                             )}
                         </div>
 
                         {/* Resume Summary */}
                         {parsedData.personalInfo && (
-                            <div className="mt-6 p-4 bg-white/5 rounded-lg space-y-2 border border-white/10">
+                            <div className="mt-6 p-4 bg-[#13163a] rounded-lg space-y-2 border border-white/10">
                                 <h3 className="font-semibold text-white">Resume Summary</h3>
                                 {parsedData.personalInfo.name && (
                                     <p className="text-sm text-white/60">
-                                        <span className="font-medium text-white/80">Name:</span> {parsedData.personalInfo.name}
+                                        <span className="font-medium text-white/60">Name:</span> {parsedData.personalInfo.name}
                                     </p>
                                 )}
                                 {parsedData.personalInfo.email && (
                                     <p className="text-sm text-white/60">
-                                        <span className="font-medium text-white/80">Email:</span> {parsedData.personalInfo.email}
+                                        <span className="font-medium text-white/60">Email:</span> {parsedData.personalInfo.email}
                                     </p>
                                 )}
                                 {parsedData.experience && parsedData.experience.length > 0 && (
                                     <p className="text-sm text-white/60">
-                                        <span className="font-medium text-white/80">Experience:</span> {parsedData.experience.length} position(s)
+                                        <span className="font-medium text-white/60">Experience:</span> {parsedData.experience.length} position(s)
                                     </p>
                                 )}
                                 {parsedData.education && parsedData.education.length > 0 && (
                                     <p className="text-sm text-white/60">
-                                        <span className="font-medium text-white/80">Education:</span> {parsedData.education.length} entry/entries
+                                        <span className="font-medium text-white/60">Education:</span> {parsedData.education.length} entry/entries
                                     </p>
                                 )}
                                 {parsedData.atsScore && (
                                     <p className="text-sm text-white/60">
-                                        <span className="font-medium text-white/80">ATS Score:</span> {parsedData.atsScore}/100
+                                        <span className="font-medium text-white/60">ATS Score:</span> {parsedData.atsScore}/100
                                     </p>
                                 )}
                             </div>
@@ -443,14 +443,14 @@ export default function ResumeUploadPage() {
                                     setResumeFile(null)
                                 }}
                                 disabled={saving}
-                                className="border-white/10 text-white hover:bg-white/10"
+                                className="border-white/10 text-white hover:bg-[#13163a]"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 onClick={handleSaveResume}
                                 disabled={saving || confirmedSkills.length === 0}
-                                className="flex-1 bg-[#E8C547] hover:bg-[#E8C547]/90 text-black"
+                                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                             >
                                 {saving ? (
                                     <>
@@ -471,13 +471,13 @@ export default function ResumeUploadPage() {
 
             {/* Info Alert */}
             {!hasResume && (
-                <Card className="bg-blue-500/10 border-blue-500/20">
+                <Card className="bg-primary/8 border border-primary/20 rounded-2xl">
                     <CardContent className="pt-6">
                         <div className="flex items-start gap-3">
-                            <AlertCircle className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-                            <div className="text-sm text-blue-100">
-                                <div className="font-semibold mb-1">Why Upload Your Resume?</div>
-                                <div className="text-blue-200/80">
+                            <AlertCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                            <div className="text-sm text-white/60">
+                                <div className="font-semibold text-white mb-1">Why Upload Your Resume?</div>
+                                <div className="text-white/60">
                                     Uploading your resume helps the system extract your skills and provide better assessment results. Without a resume, you may receive lower scores as the system cannot accurately match your skills to the assessment requirements.
                                 </div>
                             </div>

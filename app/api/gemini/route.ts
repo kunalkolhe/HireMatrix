@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       apiKey: apiKey,
       defaultHeaders: {
         'HTTP-Referer': 'http://localhost:3000',
-        'X-Title': 'AssessAI'
+        'X-Title': 'HireMatrix'
       }
     })
 

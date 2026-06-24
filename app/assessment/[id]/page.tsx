@@ -33,7 +33,7 @@ import dynamic from "next/dynamic"
 // Dynamic import for Monaco Editor
 const MonacoEditor = dynamic(
     () => import("@monaco-editor/react").then((mod) => mod.default),
-    { ssr: false, loading: () => <div className="h-96 bg-slate-900/50 animate-pulse rounded-xl border border-white/10" /> }
+    { ssr: false, loading: () => <div className="h-96 bg-slate-900/50 animate-pulse rounded-xl border border-border" /> }
 )
 
 interface Question {
@@ -87,7 +87,7 @@ export default function AssessmentPage() {
 
     // Load job data
     useEffect(() => {
-        const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+        const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
         const foundJob = savedJobs.find((j: Job) => j.id === jobId)
         if (foundJob) {
             setJob(foundJob)
@@ -233,15 +233,15 @@ export default function AssessmentPage() {
     if (!job) {
         return (
             <div className="min-h-screen bg-[#050510] flex items-center justify-center p-4">
-                <Card className="bg-white/5 border-white/10 backdrop-blur-xl max-w-md w-full">
+                <Card className="bg-secondary border-border backdrop-blur-xl max-w-md w-full">
                     <CardContent className="pt-8 text-center">
                         <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
-                            <AlertCircle className="w-8 h-8 text-red-400" />
+                            <AlertCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
                         </div>
-                        <h2 className="text-xl font-semibold text-white mb-2">Assessment Not Found</h2>
+                        <h2 className="text-xl font-semibold text-foreground mb-2">Assessment Not Found</h2>
                         <p className="text-muted-foreground mb-6">This assessment might have been removed or is unavailable.</p>
                         <Link href="/">
-                            <Button className="w-full rounded-full bg-white/10 hover:bg-white/20">Go Home</Button>
+                            <Button className="w-full rounded-full bg-secondary hover:bg-secondary">Go Home</Button>
                         </Link>
                     </CardContent>
                 </Card>
@@ -259,24 +259,24 @@ export default function AssessmentPage() {
                     <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/20 rounded-full blur-[120px] opacity-20" />
                 </div>
 
-                <Card className="bg-white/5 border-white/10 backdrop-blur-2xl max-w-2xl w-full relative z-10 shadow-2xl shadow-black/50">
+                <Card className="bg-secondary border-border backdrop-blur-2xl max-w-2xl w-full relative z-10 shadow-2xl shadow-black/50">
                     <CardHeader className="text-center pb-2">
                         <div className="w-16 h-16 bg-gradient-to-br from-primary to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20">
-                            <Brain className="w-8 h-8 text-white" />
+                            <Brain className="w-8 h-8 text-foreground" />
                         </div>
-                        <CardTitle className="text-3xl font-bold text-white mb-2">{job.title}</CardTitle>
-                        <CardDescription className="text-lg text-slate-400">{job.company}</CardDescription>
+                        <CardTitle className="text-3xl font-bold font-mono text-foreground mb-2">{job.title}</CardTitle>
+                        <CardDescription className="text-lg text-muted-foreground">{job.company}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-8 pt-6">
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-center transition-transform hover:scale-105 duration-300">
+                            <div className="p-4 rounded-2xl bg-secondary border border-border text-center transition-transform hover:scale-105 duration-300">
                                 <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                                <div className="text-2xl font-bold text-white">{job.config?.duration_minutes || 60}m</div>
+                                <div className="text-2xl font-bold text-foreground">{job.config?.duration_minutes || 60}m</div>
                                 <div className="text-xs text-muted-foreground uppercase tracking-widest">Duration</div>
                             </div>
-                            <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-center transition-transform hover:scale-105 duration-300">
+                            <div className="p-4 rounded-2xl bg-secondary border border-border text-center transition-transform hover:scale-105 duration-300">
                                 <FileText className="w-6 h-6 text-secondary mx-auto mb-2" />
-                                <div className="text-2xl font-bold text-white">{job.questions?.length || 0}</div>
+                                <div className="text-2xl font-bold text-foreground">{job.questions?.length || 0}</div>
                                 <div className="text-xs text-muted-foreground uppercase tracking-widest">Questions</div>
                             </div>
                         </div>
@@ -286,7 +286,7 @@ export default function AssessmentPage() {
                                 <Shield className="w-4 h-4" />
                                 Anti-Cheating Enabled
                             </h3>
-                            <ul className="space-y-2 text-sm text-slate-400">
+                            <ul className="space-y-2 text-sm text-muted-foreground">
                                 <li className="flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/50" />
                                     Tab switching is monitored and logged
@@ -324,27 +324,27 @@ export default function AssessmentPage() {
             <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center p-4 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-pattern.svg')] opacity-10 pointer-events-none" />
 
-                <Card className="bg-white/5 border-white/10 backdrop-blur-2xl max-w-lg w-full relative z-10">
+                <Card className="bg-secondary border-border backdrop-blur-2xl max-w-lg w-full relative z-10">
                     <CardContent className="pt-12 pb-8 px-8 text-center">
                         <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl ${score.passed
                             ? 'bg-emerald-500/20 border-2 border-emerald-500/50 shadow-emerald-500/20'
                             : 'bg-red-500/20 border-2 border-red-500/50 shadow-red-500/20'
                             }`}>
                             {score.passed
-                                ? <CheckCircle className="w-12 h-12 text-emerald-400" />
-                                : <AlertCircle className="w-12 h-12 text-red-400" />
+                                ? <CheckCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
+                                : <AlertCircle className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20" />
                             }
                         </div>
 
-                        <h2 className="text-3xl font-bold text-white mb-2">
+                        <h2 className="text-3xl font-bold font-mono text-foreground mb-2">
                             {score.passed ? "Excellent Work!" : "Assessment Complete"}
                         </h2>
                         <p className="text-muted-foreground mb-8">
                             You have completed {job.title}
                         </p>
 
-                        <div className="bg-white/5 rounded-2xl p-6 mb-8 border border-white/5">
-                            <div className="text-5xl font-bold text-white mb-2">{score.percentage}%</div>
+                        <div className="bg-secondary rounded-2xl p-6 mb-8 border border-border">
+                            <div className="text-5xl font-bold font-mono text-foreground mb-2">{score.percentage}%</div>
                             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                                 <span>{score.total_score} points</span>
                                 <span>•</span>
@@ -369,16 +369,16 @@ export default function AssessmentPage() {
             <div className="fixed top-0 left-0 right-0 z-50 px-6 py-4 pointer-events-none">
                 <div className="max-w-6xl mx-auto flex items-center justify-between pointer-events-auto">
                     {/* Timer and Progress Pill */}
-                    <div className="flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-4 py-2 shadow-2xl">
+                    <div className="flex items-center gap-3 bg-black/40 backdrop-blur-md border border-border rounded-full px-4 py-2 shadow-2xl">
                         <div className={`flex items-center gap-2 font-mono font-bold ${timeRemaining < 300 ? 'text-red-400 animate-pulse' : 'text-primary'
                             }`}>
                             <Timer className="w-4 h-4" />
                             {formatTime(timeRemaining)}
                         </div>
-                        <div className="w-px h-4 bg-white/10" />
+                        <div className="w-px h-4 bg-secondary" />
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <span>Q{currentIndex + 1}/{totalQuestions}</span>
-                            <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                            <div className="w-20 h-1.5 bg-secondary rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-primary transition-all duration-300"
                                     style={{ width: `${(answeredCount / totalQuestions) * 100}%` }}
@@ -388,19 +388,19 @@ export default function AssessmentPage() {
                     </div>
 
                     {/* Controls Pill */}
-                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-2 py-2 shadow-2xl">
+                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md border border-border rounded-full px-2 py-2 shadow-2xl">
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setZenMode(!zenMode)}
-                            className="w-8 h-8 rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition-colors"
+                            className="w-8 h-8 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                         >
                             {zenMode ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                         </Button>
                         <Button
                             onClick={handleSubmit}
                             size="sm"
-                            className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white border-0 px-4"
+                            className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-foreground border-0 px-4"
                         >
                             Submit
                         </Button>
@@ -411,7 +411,7 @@ export default function AssessmentPage() {
             {/* Anti-cheat Warnings */}
             {showAntiCheatWarning && (
                 <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 animate-bounce">
-                    <div className="bg-red-500 text-white px-6 py-2 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.6)] flex items-center gap-2 font-bold">
+                    <div className="bg-red-500 text-foreground px-6 py-2 rounded-full shadow-[0_0_30px_rgba(239,68,68,0.6)] flex items-center gap-2 font-bold">
                         <Shield className="w-5 h-5 fill-current" />
                         Warning: Activity Flagged!
                     </div>
@@ -426,19 +426,19 @@ export default function AssessmentPage() {
                             {/* Question Header */}
                             <div className="mb-8">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <Badge className="bg-white/10 text-white border-0 backdrop-blur-md px-3 py-1 text-sm font-medium uppercase tracking-wide">
+                                    <Badge className="bg-secondary text-foreground border-0 backdrop-blur-md px-3 py-1 text-sm font-medium uppercase tracking-wide">
                                         {currentQuestion.type}
                                     </Badge>
-                                    <span className="text-sm text-slate-500 uppercase tracking-widest font-semibold">{currentQuestion.marks} Points</span>
+                                    <span className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">{currentQuestion.marks} Points</span>
                                 </div>
 
                                 {currentQuestion.type === 'mcq' && (
-                                    <h2 className="text-2xl md:text-3xl font-medium text-white leading-relaxed">
+                                    <h2 className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed">
                                         {currentQuestion.content.question}
                                     </h2>
                                 )}
                                 {currentQuestion.type === 'subjective' && (
-                                    <h2 className="text-2xl md:text-3xl font-medium text-white leading-relaxed">
+                                    <h2 className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed">
                                         {currentQuestion.content.question}
                                     </h2>
                                 )}
@@ -458,18 +458,18 @@ export default function AssessmentPage() {
                                                         group relative p-6 rounded-2xl cursor-pointer transition-all duration-200 border
                                                         ${isSelected
                                                             ? 'bg-primary/10 border-primary shadow-[0_0_30px_-5px_var(--primary)]'
-                                                            : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                                                            : 'bg-secondary border-border hover:bg-secondary hover:border-border'
                                                         }
                                                     `}
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         <div className={`
                                                             w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors
-                                                            ${isSelected ? 'border-primary bg-primary text-white' : 'border-slate-600 group-hover:border-slate-400'}
+                                                            ${isSelected ? 'border-primary bg-primary text-foreground' : 'border-slate-600 group-hover:border-slate-400'}
                                                         `}>
-                                                            {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                                                            {isSelected && <div className="w-2 h-2 rounded-full bg-background" />}
                                                         </div>
-                                                        <span className={`text-lg transition-colors ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                                                        <span className={`text-lg transition-colors ${isSelected ? 'text-foreground' : 'text-slate-300 group-hover:text-foreground'}`}>
                                                             {option}
                                                         </span>
                                                     </div>
@@ -485,9 +485,9 @@ export default function AssessmentPage() {
                                             placeholder="Type your detailed response here..."
                                             value={answers[currentQuestion.id]?.response?.text || ''}
                                             onChange={(e) => updateAnswer(currentQuestion.id, { text: e.target.value })}
-                                            className="min-h-[400px] bg-white/5 border-white/10 text-lg text-slate-200 p-6 rounded-2xl focus:border-primary/50 focus:ring-primary/20 resize-none selection:bg-primary/30"
+                                            className="min-h-[400px] bg-secondary border-border text-lg text-slate-200 p-6 rounded-2xl focus:border-primary/50 focus:ring-primary/20 resize-none selection:bg-primary/30"
                                         />
-                                        <div className="absolute bottom-4 right-4 text-xs text-slate-500 pointer-events-none">
+                                        <div className="absolute bottom-4 right-4 text-xs text-muted-foreground pointer-events-none">
                                             {answers[currentQuestion.id]?.response?.text?.length || 0} chars
                                         </div>
                                     </div>
@@ -496,31 +496,31 @@ export default function AssessmentPage() {
                                 {currentQuestion.type === 'coding' && (
                                     <div className="grid lg:grid-cols-2 gap-6 h-[600px]">
                                         {/* Problem Panel */}
-                                        <div className="bg-white/5 rounded-2xl border border-white/10 p-6 overflow-y-auto custom-scrollbar">
-                                            <h3 className="text-xl font-bold text-white mb-4">Problem Statement</h3>
+                                        <div className="bg-secondary rounded-2xl border border-border p-6 overflow-y-auto custom-scrollbar">
+                                            <h3 className="text-xl font-bold text-foreground mb-4">Problem Statement</h3>
                                             <div className="prose prose-invert prose-p:text-slate-300 max-w-none">
                                                 <p>{currentQuestion.content.problem_statement}</p>
 
                                                 {currentQuestion.content.input_format && (
                                                     <div className="mt-6">
-                                                        <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Input Format</h4>
+                                                        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Input Format</h4>
                                                         <p className="text-sm">{currentQuestion.content.input_format}</p>
                                                     </div>
                                                 )}
 
                                                 {currentQuestion.content.examples && (
                                                     <div className="mt-6 space-y-4">
-                                                        <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Examples</h4>
+                                                        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Examples</h4>
                                                         {currentQuestion.content.examples.map((ex: any, i: number) => (
-                                                            <div key={i} className="bg-black/40 rounded-xl p-4 border border-white/5">
+                                                            <div key={i} className="bg-black/40 rounded-xl p-4 border border-border">
                                                                 <div className="grid grid-cols-2 gap-4">
                                                                     <div>
-                                                                        <div className="text-xs text-slate-500 mb-1">Input</div>
-                                                                        <code className="text-sm font-mono text-emerald-400">{ex.input}</code>
+                                                                        <div className="text-xs text-muted-foreground mb-1">Input</div>
+                                                                        <code className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{ex.input}</code>
                                                                     </div>
                                                                     <div>
-                                                                        <div className="text-xs text-slate-500 mb-1">Output</div>
-                                                                        <code className="text-sm font-mono text-emerald-400">{ex.output}</code>
+                                                                        <div className="text-xs text-muted-foreground mb-1">Output</div>
+                                                                        <code className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{ex.output}</code>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -531,14 +531,14 @@ export default function AssessmentPage() {
                                         </div>
 
                                         {/* Editor Panel */}
-                                        <div className="flex flex-col bg-[#1e1e1e] rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-                                            <div className="flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-white/5">
+                                        <div className="flex flex-col bg-[#1e1e1e] rounded-2xl border border-border overflow-hidden shadow-2xl">
+                                            <div className="flex items-center justify-between px-4 py-3 bg-[#252526] border-b border-border">
                                                 <div className="flex items-center gap-2">
                                                     <Code className="w-4 h-4 text-primary" />
                                                     <span className="text-sm font-medium text-slate-300">Code Editor</span>
                                                 </div>
                                                 <select
-                                                    className="bg-black/20 border border-white/10 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-primary/50"
+                                                    className="bg-black/20 border border-border rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-primary/50"
                                                     value={answers[currentQuestion.id]?.response?.language || 'python'}
                                                     onChange={(e) => updateAnswer(currentQuestion.id, {
                                                         ...answers[currentQuestion.id]?.response,
@@ -583,23 +583,23 @@ export default function AssessmentPage() {
 
             {/* Floating Navigation Controls */}
             <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-40 transition-all duration-500 ${zenMode ? 'opacity-0 hover:opacity-100' : 'opacity-100'}`}>
-                <div className="flex items-center gap-4 bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
+                <div className="flex items-center gap-4 bg-black/60 backdrop-blur-xl border border-border rounded-full px-6 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
                     <Button
                         variant="ghost"
                         onClick={handlePrev}
                         disabled={currentIndex === 0}
-                        className="rounded-full text-slate-400 hover:text-white hover:bg-white/10 pl-2 pr-4"
+                        className="rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary pl-2 pr-4"
                     >
                         <ChevronLeft className="w-5 h-5 mr-1" />
                         Prev
                     </Button>
 
-                    <div className="h-4 w-px bg-white/10" />
+                    <div className="h-4 w-px bg-secondary" />
 
                     <Button
                         onClick={handleNext}
                         disabled={currentIndex === totalQuestions - 1}
-                        className="rounded-full bg-primary/20 text-primary hover:bg-primary/30 hover:text-white border border-primary/20 pl-4 pr-2"
+                        className="rounded-full bg-primary/20 text-primary hover:bg-primary/30 hover:text-foreground border border-primary/20 pl-4 pr-2"
                     >
                         Next
                         <ChevronRight className="w-5 h-5 ml-1" />

@@ -222,8 +222,10 @@ export default function AnalyticsPage() {
 
     // Status distribution
     const statusDistribution = useMemo(() => {
-        const statusCounts = {
+        const statusCounts: Record<string, number> = {
             pending: 0,
+            in_progress: 0,
+            submitted: 0,
             evaluated: 0,
             shortlisted: 0,
             rejected: 0
@@ -351,7 +353,7 @@ export default function AnalyticsPage() {
                             toast.error('Failed to export analytics report')
                         }
                     }}
-                    className="border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
+                    className="border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white"
                 >
                     <Download className="w-4 h-4 mr-2" />
                     Export Report
@@ -359,19 +361,19 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+            <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1">
                         <label className="text-sm font-medium text-white/60 mb-2 block">Assessment</label>
                         <select
                             value={assessmentFilter}
                             onChange={(e) => setAssessmentFilter(e.target.value)}
-                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-white/20"
+                            className="w-full px-3 py-2 bg-[#13163a] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-white/10"
                             style={{ colorScheme: 'dark' }}
                         >
-                            <option value="all" className="bg-[#1a1a1a] text-white">All Assessments</option>
+                            <option value="all" className="bg-[#0D1225] text-white">All Assessments</option>
                             {assessments.map(assessment => (
-                                <option key={assessment.id} value={assessment.id} className="bg-[#1a1a1a] text-white">
+                                <option key={assessment.id} value={assessment.id} className="bg-[#0D1225] text-white">
                                     {assessment.title} - {assessment.company}
                                 </option>
                             ))}
@@ -387,8 +389,8 @@ export default function AnalyticsPage() {
                                     size="sm"
                                     onClick={() => setDateRange(range)}
                                     className={dateRange === range
-                                        ? 'bg-white text-black'
-                                        : 'border-white/10 text-white/60 hover:bg-white/10 hover:text-white'}
+                                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                                        : 'border-white/10 text-white/60 hover:bg-[#13163a] hover:text-white'}
                                 >
                                     {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : range === '90d' ? '90 Days' : 'All Time'}
                                 </Button>
@@ -400,37 +402,37 @@ export default function AnalyticsPage() {
 
             {/* Overview Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Total Candidates</p>
                     <div className="text-3xl font-semibold text-white">{stats.totalFiltered}</div>
-                    <p className="text-xs text-white/30 mt-1">Filtered results</p>
+                    <p className="text-xs text-white/40 mt-1">Filtered results</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Average Score</p>
                     <div className="text-3xl font-semibold text-blue-400">
                         {Math.round(stats.averageScore)}%
                     </div>
-                    <p className="text-xs text-white/30 mt-1">Across all submissions</p>
+                    <p className="text-xs text-white/40 mt-1">Across all submissions</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Shortlisted</p>
-                    <div className="text-3xl font-semibold text-emerald-400">{stats.shortlisted}</div>
-                    <p className="text-xs text-white/30 mt-1">{stats.total > 0 ? Math.round((stats.shortlisted / stats.total) * 100) : 0}% of total</p>
+                    <div className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">{stats.shortlisted}</div>
+                    <p className="text-xs text-white/40 mt-1">{stats.total > 0 ? Math.round((stats.shortlisted / stats.total) * 100) : 0}% of total</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <p className="text-sm text-white/40 mb-2">Flagged</p>
                     <div className="text-3xl font-semibold text-amber-400">{antiCheatStats.flaggedCount}</div>
-                    <p className="text-xs text-white/30 mt-1">Anti-cheat flags</p>
+                    <p className="text-xs text-white/40 mt-1">Anti-cheat flags</p>
                 </div>
             </div>
 
             {/* Charts Row 1 */}
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Score Distribution */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <div className="flex items-center gap-2 mb-2">
                         <BarChart3 className="w-5 h-5 text-blue-400" />
                         <h3 className="text-lg font-semibold text-white">Score Distribution</h3>
@@ -459,9 +461,9 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Submissions Over Time */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <div className="flex items-center gap-2 mb-2">
-                        <TrendingUp className="w-5 h-5 text-emerald-400" />
+                        <TrendingUp className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20" />
                         <h3 className="text-lg font-semibold text-white">Submissions Over Time</h3>
                     </div>
                     <p className="text-sm text-white/40 mb-4">Daily submission trends</p>
@@ -497,7 +499,7 @@ export default function AnalyticsPage() {
             {/* Charts Row 2 */}
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Top Skills */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <div className="flex items-center gap-2 mb-2">
                         <Award className="w-5 h-5 text-amber-400" />
                         <h3 className="text-lg font-semibold text-white">Top Performing Skills</h3>
@@ -526,7 +528,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Status Distribution */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl p-6">
                     <div className="flex items-center gap-2 mb-2">
                         <Target className="w-5 h-5 text-purple-400" />
                         <h3 className="text-lg font-semibold text-white">Status Distribution</h3>
@@ -566,18 +568,18 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Assessment Performance Table */}
-            <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
-                <div className="p-6 border-b border-white/10">
+            <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden">
+                <div className="p-6 border-b border-white/8">
                     <div className="flex items-center gap-2 mb-2">
                         <FileText className="w-5 h-5 text-blue-400" />
                         <h3 className="text-lg font-semibold text-white">Assessment Performance</h3>
                     </div>
                     <p className="text-sm text-white/40">Performance metrics by assessment</p>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="bg-[#13163a] border border-white/10 rounded-xl overflow-hidden overflow-x-auto">
                     <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-white/10 bg-white/5">
+                        <thead className="bg-white/5 text-white/60 text-xs font-semibold uppercase tracking-wide">
+                            <tr className="border-b border-white/8 bg-[#13163a]">
                                 <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase">Assessment</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase">Submissions</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-white/40 uppercase">Avg Score</th>
@@ -586,7 +588,7 @@ export default function AnalyticsPage() {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {assessmentPerformance.map((assessment) => (
-                                <tr key={assessment.id} className="hover:bg-white/5 transition-colors">
+                                <tr key={assessment.id} className="hover:bg-[#13163a] transition-colors">
                                     <td className="px-4 py-4 font-medium text-white">{assessment.title}</td>
                                     <td className="px-4 py-4 text-white/60">{assessment.submissions}</td>
                                     <td className="px-4 py-4">
@@ -598,10 +600,10 @@ export default function AnalyticsPage() {
                                         </span>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <div className="w-32 bg-white/10 rounded-full h-2">
+                                        <div className="w-32 bg-[#13163a] rounded-full h-2">
                                             <div
                                                 className={`h-2 rounded-full ${assessment.avgScore >= 75 ? 'bg-emerald-500' :
-                                                        assessment.avgScore >= 60 ? 'bg-blue-500' :
+                                                        assessment.avgScore >= 60 ? 'bg-primary' :
                                                             'bg-red-500'
                                                     }`}
                                                 style={{ width: `${assessment.avgScore}%` }}
@@ -616,16 +618,16 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Insights */}
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6">
+            <div className="bg-primary/10 border border-blue-500/20 rounded-xl p-6">
                 <div className="flex items-center gap-2 mb-4">
                     <Brain className="w-5 h-5 text-blue-400" />
                     <h3 className="text-lg font-semibold text-white">AI Insights & Recommendations</h3>
                 </div>
                 <div className="space-y-3">
                     {insights.map((insight, idx) => (
-                        <div key={idx} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                        <div key={idx} className="flex items-start gap-3 p-3 bg-[#13163a] rounded-lg border border-white/10">
                             <Brain className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-                            <p className="text-white/80">{insight}</p>
+                            <p className="text-white/60">{insight}</p>
                         </div>
                     ))}
                 </div>

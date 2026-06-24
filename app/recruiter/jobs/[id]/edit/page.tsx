@@ -23,18 +23,9 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
 import { toast } from "sonner"
-import type { ParsedSkills } from "@/lib/types"
+import type { ParsedSkills, AssessmentConfig } from "@/lib/types"
 
-interface AssessmentConfig {
-    mcq_count: number
-    mcq_weightage: number
-    subjective_count: number
-    subjective_weightage: number
-    coding_count: number
-    coding_weightage: number
-    duration_minutes: number
-    passing_percentage: number
-}
+
 
 interface ParsedJD {
     title: string
@@ -61,7 +52,10 @@ export default function EditJobPage() {
         coding_count: 2,
         coding_weightage: 40,
         duration_minutes: 60,
-        passing_percentage: 50
+        passing_percentage: 50,
+        shuffle_questions: true,
+        show_results_immediately: false,
+        allow_retake: false
     })
     const [error, setError] = useState("")
 
@@ -92,7 +86,7 @@ export default function EditJobPage() {
                     }
                 } else {
                     // Fallback to localStorage
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const job = savedJobs.find((j: any) => j.id === jobId)
 
                     if (!job) {
@@ -123,7 +117,7 @@ export default function EditJobPage() {
                 console.error("Error loading job:", err)
                 // Fallback to localStorage
                 try {
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const job = savedJobs.find((j: any) => j.id === jobId)
                     if (job) {
                         setCompany(job.company || "")
@@ -191,7 +185,7 @@ export default function EditJobPage() {
 
                 // Also update localStorage as backup
                 try {
-                    const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                    const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                     const updatedJobs = savedJobs.map((j: any) => {
                         if (j.id === jobId) {
                             return {
@@ -205,7 +199,7 @@ export default function EditJobPage() {
                         }
                         return j
                     })
-                    localStorage.setItem('assessai_jobs', JSON.stringify(updatedJobs))
+                    localStorage.setItem('hirematrix_jobs', JSON.stringify(updatedJobs))
                 } catch (e) {
                     console.warn('Failed to update localStorage backup:', e)
                 }
@@ -219,7 +213,7 @@ export default function EditJobPage() {
             console.error("Error saving job:", err)
             // Fallback to localStorage
             try {
-                const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+                const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
                 const updatedJobs = savedJobs.map((job: any) => {
                     if (job.id === jobId) {
                         return {
@@ -233,7 +227,7 @@ export default function EditJobPage() {
                     }
                     return job
                 })
-                localStorage.setItem('assessai_jobs', JSON.stringify(updatedJobs))
+                localStorage.setItem('hirematrix_jobs', JSON.stringify(updatedJobs))
                 toast.success("Assessment updated successfully (localStorage)")
                 router.push('/recruiter/dashboard')
             } catch (e) {
@@ -262,7 +256,7 @@ export default function EditJobPage() {
                     </Link>
                     <div>
                         <h1 className="text-2xl font-bold text-white">Edit Assessment</h1>
-                        <p className="text-white/50">Update assessment details and configuration</p>
+                        <p className="text-white/40">Update assessment details and configuration</p>
                     </div>
                 </div>
                 <Button onClick={handleSave} className="rounded-full">
@@ -273,7 +267,7 @@ export default function EditJobPage() {
 
             <div className="grid gap-8 max-w-4xl mx-auto">
                 {/* Basic Details */}
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-[#13163a] border-white/10">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-white">
                             <Briefcase className="w-5 h-5 text-blue-400" />
@@ -283,50 +277,50 @@ export default function EditJobPage() {
                     <CardContent className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="title" className="text-white/70">Job Title</Label>
+                                <Label htmlFor="title" className="text-white/60">Job Title</Label>
                                 <Input
                                     id="title"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="bg-white/5 border-white/10 text-white"
+                                    className="bg-[#13163a] border-white/10 text-white"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="company" className="text-white/70">Company Name</Label>
+                                <Label htmlFor="company" className="text-white/60">Company Name</Label>
                                 <Input
                                     id="company"
                                     value={company}
                                     onChange={(e) => setCompany(e.target.value)}
-                                    className="bg-white/5 border-white/10 text-white"
+                                    className="bg-[#13163a] border-white/10 text-white"
                                 />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="description" className="text-white/70">Job Description</Label>
+                            <Label htmlFor="description" className="text-white/60">Job Description</Label>
                             <Textarea
                                 id="description"
                                 value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
-                                className="min-h-[150px] bg-white/5 border-white/10 text-white"
+                                className="min-h-[150px] bg-[#13163a] border-white/10 text-white"
                             />
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* Configuration */}
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-[#13163a] border-white/10">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-white">
                             <Settings className="w-5 h-5 text-blue-400" />
                             Assessment Configuration
                         </CardTitle>
-                        <CardDescription className="text-white/50">
+                        <CardDescription className="text-white/40">
                             Adjust the difficulty and structure of the assessment
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-8">
                         <div className="grid md:grid-cols-3 gap-4">
-                            <div className="p-4 rounded-xl border border-white/10 bg-white/5">
+                            <div className="p-4 rounded-xl border border-white/10 bg-[#13163a]">
                                 <div className="flex items-center gap-2 mb-2 text-blue-400">
                                     <FileText className="w-4 h-4" />
                                     <span className="font-semibold text-sm text-white">MCQs</span>
@@ -335,10 +329,10 @@ export default function EditJobPage() {
                                     type="number"
                                     value={config.mcq_count}
                                     onChange={(e) => setConfig({ ...config, mcq_count: parseInt(e.target.value) || 0 })}
-                                    className="text-white text-center font-bold text-xl h-12 bg-white/5 border-white/10"
+                                    className="text-white text-center font-bold text-xl h-12 bg-[#13163a] border-white/10"
                                 />
                             </div>
-                            <div className="p-4 rounded-xl border border-white/10 bg-white/5">
+                            <div className="p-4 rounded-xl border border-white/10 bg-[#13163a]">
                                 <div className="flex items-center gap-2 mb-2 text-amber-400">
                                     <MessageSquare className="w-4 h-4" />
                                     <span className="font-semibold text-sm text-white">Subjective</span>
@@ -347,11 +341,11 @@ export default function EditJobPage() {
                                     type="number"
                                     value={config.subjective_count}
                                     onChange={(e) => setConfig({ ...config, subjective_count: parseInt(e.target.value) || 0 })}
-                                    className="text-white text-center font-bold text-xl h-12 bg-white/5 border-white/10"
+                                    className="text-white text-center font-bold text-xl h-12 bg-[#13163a] border-white/10"
                                 />
                             </div>
-                            <div className="p-4 rounded-xl border border-white/10 bg-white/5">
-                                <div className="flex items-center gap-2 mb-2 text-emerald-400">
+                            <div className="p-4 rounded-xl border border-white/10 bg-[#13163a]">
+                                <div className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                                     <Code className="w-4 h-4" />
                                     <span className="font-semibold text-sm text-white">Coding</span>
                                 </div>
@@ -359,18 +353,18 @@ export default function EditJobPage() {
                                     type="number"
                                     value={config.coding_count}
                                     onChange={(e) => setConfig({ ...config, coding_count: parseInt(e.target.value) || 0 })}
-                                    className="text-white text-center font-bold text-xl h-12 bg-white/5 border-white/10"
+                                    className="text-white text-center font-bold text-xl h-12 bg-[#13163a] border-white/10"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-4">
                             <div className="flex justify-between">
-                                <Label className="text-white/70">Duration</Label>
+                                <Label className="text-white/60">Duration</Label>
                                 <span className="text-blue-400 font-bold">{config.duration_minutes} min</span>
                             </div>
                             <Slider
-                                value={[config.duration_minutes]}
+                                value={[config.duration_minutes ?? 60]}
                                 onValueChange={([value]) => setConfig({ ...config, duration_minutes: value })}
                                 min={15}
                                 max={120}
@@ -383,19 +377,19 @@ export default function EditJobPage() {
 
                 {/* Skills Visualzation */}
                 {parsedJD && (
-                    <Card className="bg-white/5 border-white/10">
+                    <Card className="bg-[#13163a] border-white/10">
                         <CardHeader>
                             <CardTitle className="text-base font-medium text-white">Target Skills</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-wrap gap-2">
                                 {parsedJD.skills.technical.map((skill, i) => (
-                                    <Badge key={`tech-${i}`} variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30 hover:bg-blue-500/30">
+                                    <Badge key={`tech-${i}`} variant="secondary" className="bg-primary/20 text-blue-400 border-blue-500/30 hover:bg-primary/30">
                                         {skill}
                                     </Badge>
                                 ))}
                                 {parsedJD.skills.tools.map((tool, i) => (
-                                    <Badge key={`tool-${i}`} variant="secondary" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
+                                    <Badge key={`tool-${i}`} variant="secondary" className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                                         {tool}
                                     </Badge>
                                 ))}

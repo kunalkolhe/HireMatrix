@@ -44,7 +44,7 @@ export interface CandidateSubmission {
         }>
     }
     submittedAt: string
-    status: 'pending' | 'evaluated' | 'shortlisted' | 'rejected'
+    status: 'pending' | 'in_progress' | 'submitted' | 'evaluated' | 'shortlisted' | 'rejected'
     scores?: {
         totalScore: number
         totalPossible: number
@@ -203,7 +203,7 @@ function getAllSubmissionsLocalStorage(): CandidateSubmission[] {
  */
 function updateJobCandidateCount(jobId: string) {
     try {
-        const savedJobs = JSON.parse(localStorage.getItem('assessai_jobs') || '[]')
+        const savedJobs = JSON.parse(localStorage.getItem('hirematrix_jobs') || '[]')
         const jobIndex = savedJobs.findIndex((j: any) => j.id === jobId)
         
         if (jobIndex >= 0) {
@@ -212,7 +212,7 @@ function updateJobCandidateCount(jobId: string) {
                 const allSubmissions = getAllSubmissionsLocalStorage()
                 const submissionsForJob = allSubmissions.filter(s => s.jobId === jobId)
                 savedJobs[jobIndex].candidatesCount = submissionsForJob.length
-                localStorage.setItem('assessai_jobs', JSON.stringify(savedJobs))
+                localStorage.setItem('hirematrix_jobs', JSON.stringify(savedJobs))
             } catch (e) {
                 // If getSubmissionsByJob fails, just set to 0 or keep existing count
                 console.warn('Could not update candidate count:', e)
@@ -258,12 +258,11 @@ export async function getSubmissionsByCandidate(candidateId?: string, candidateE
     
     // Fallback to localStorage
     const allSubmissions = getAllSubmissionsLocalStorage()
-    if (candidateId) {
-        return allSubmissions.filter(s => s.candidateInfo?.userId === candidateId)
-    } else if (candidateEmail) {
-        return allSubmissions.filter(s => s.candidateInfo?.email === candidateEmail)
-    }
-    return []
+    return allSubmissions.filter(s => {
+        const matchId = candidateId ? s.candidateInfo?.userId === candidateId : false
+        const matchEmail = candidateEmail ? s.candidateInfo?.email === candidateEmail : false
+        return matchId || matchEmail
+    })
 }
 
 /**
@@ -357,21 +356,44 @@ export async function updateSubmissionStatus(
     
     // Fallback to localStorage
     const submissions = getAllSubmissionsLocalStorage()
-    const index = submissions.findIndex(s => s.id === submissionId)
+    let index = submissions.findIndex(s => s.id === submissionId)
+    
+    // Try decoded if exact match fails
+    if (index === -1) {
+        try {
+            const decoded = decodeURIComponent(submissionId)
+            index = submissions.findIndex(s => s.id === decoded)
+        } catch (e) {
+            // Ignore decode errors
+        }
+    }
+    
+    // Try encoded if decoded match fails
+    if (index === -1) {
+        try {
+            const encoded = encodeURIComponent(submissionId)
+            index = submissions.findIndex(s => s.id === encoded)
+        } catch (e) {
+            // Ignore encode errors
+        }
+    }
     
     if (index >= 0) {
         submissions[index].status = status
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions))
-        
-        // Dispatch event
-        if (typeof window !== 'undefined') {
-            window.dispatchEvent(new Event('submissionUpdated'))
-        }
-        
-        return true
+    } else {
+        // If not found in localStorage (because it's a Supabase-only record),
+        // we append a sparse override record so the UI can merge it.
+        submissions.push({ id: submissionId, status: status } as any)
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions))
+    
+    // Dispatch event
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('submissionUpdated'))
     }
     
-    return false
+    return true
 }
 
 /**

@@ -143,7 +143,7 @@ export async function detectSubjectivePlagiarism(
     threshold: number = 70
 ): Promise<PlagiarismResult> {
     const answer = submission.answers[questionId]
-    const answerText = answer?.response?.text || ''
+    const answerText = (answer?.response as any)?.text || ''
     
     if (!answerText || answerText.trim().length < 20) {
         return {
@@ -166,7 +166,7 @@ export async function detectSubjectivePlagiarism(
         if (otherSubmission.assessmentId !== submission.assessmentId) continue
         
         const otherAnswer = otherSubmission.answers[questionId]
-        const otherText = otherAnswer?.response?.text || ''
+        const otherText = (otherAnswer?.response as any)?.text || ''
         
         if (!otherText || otherText.trim().length < 20) continue
         
@@ -210,7 +210,7 @@ export async function detectCodeSimilarity(
     threshold: number = 80
 ): Promise<PlagiarismResult> {
     const answer = submission.answers[questionId]
-    const code = answer?.response?.code || ''
+    const code = (answer?.response as any)?.code || ''
     
     if (!code || code.trim().length < 30) {
         return {
@@ -233,7 +233,7 @@ export async function detectCodeSimilarity(
         if (otherSubmission.assessmentId !== submission.assessmentId) continue
         
         const otherAnswer = otherSubmission.answers[questionId]
-        const otherCode = otherAnswer?.response?.code || ''
+        const otherCode = (otherAnswer?.response as any)?.code || ''
         
         if (!otherCode || otherCode.trim().length < 30) continue
         
